@@ -1812,7 +1812,7 @@ $as_echo "no" >&6; }
 fi
 
 
-javahome=`dirname ${JAVA_HOME}`
+javahome="${JAVA_HOME}"
 echo "JAVAHOME=${javahome}"
 for each in `ls ${javahome}/include` ;do
   if  test -d ${javahome}/include/${each}  ;then

@@ -1,6 +1,6 @@
 AC_INIT(Makefile.in)
 AC_PATH_PROG(javahome,java)
-javahome=`dirname ${JAVA_HOME}`
+javahome="${JAVA_HOME}"
 echo "JAVAHOME=${javahome}"
 for each in `ls ${javahome}/include` ;do
   if [ test -d ${javahome}/include/${each} ] ;then

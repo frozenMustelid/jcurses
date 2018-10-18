@@ -13,8 +13,5 @@ jcurses.pws
 autom4te.cache
 target/
 *.log
-lib/jcurses.jar
-lib/libjcurses.so
-lib/libjcurses.dll
-lib/libjcurses.jnilib
-
+lib/
+doc/
