@@ -414,6 +414,7 @@ public class TextComponent extends Widget
       else
       {
         setCursorLocation(_cursPosX - 1, _cursPosY);
+        redrawAfterCursorMove(bCursorPosX, bCursorPosY, bFirstChar, bFirstLine, bChar); //Should act like we're moving the cursor, so the rest of the lines are updated too
         redrawLine(_cursPosY);
       }
 
@@ -432,6 +433,7 @@ public class TextComponent extends Widget
       else
       {
         setCursorLocation(_cursPosX + 1, _cursPosY);
+        redrawAfterCursorMove(bCursorPosX, bCursorPosY, bFirstChar, bFirstLine, bChar); //Should act like we're moving the cursor, so the rest of the lines are updated too
         redrawLine(_cursPosY);
       }
 
