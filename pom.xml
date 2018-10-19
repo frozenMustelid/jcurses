@@ -19,8 +19,55 @@
         <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/javacurses:${project.name}</connection>
         <url>http://sourceforge.net/projects/javacurses</url>
     </scm>
+
+    <profiles>
+        <profile>
+            <id>build-natives</id>
+            <activation>
+                <property><name>!jcurses.skipnatives</name></property>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.7</version>
+                        <executions>
+                            <execution>
+                                <phase>generate-resources</phase>
+                                <id>build-natives</id>
+                                <goals><goal>run</goal></goals>
+                                <configuration>
+                                    <exportAntProperties>true</exportAntProperties>
+                                    <target>
+                                        <exec executable="make"><arg value="clean"/></exec>
+                                        <exec executable="./configure"/>
+                                        <exec executable="make"><arg value="native"/></exec>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <sourceDirectory>src</sourceDirectory>
+
+        <resources>
+            <resource>
+                <directory>${basedir}/lib</directory>
+                <includes>
+                    <include>*.so</include>
+                    <include>*.dylib</include>
+                    <include>*.dll</include>
+                </includes>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <artifactId>maven-site-plugin</artifactId>
@@ -30,26 +77,6 @@
                         <xdoc>navigation.xml,changes.xml</xdoc>
                     </moduleExcludes>
                 </configuration>
-            </plugin>
-            <plugin>
-                <!-- Call javah -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <phase>process-classes</phase>
-                        <goals><goal>run</goal></goals>
-                        <configuration>
-                            <exportAntProperties>true</exportAntProperties>
-                            <target>
-                                <exec executable="make"><arg value="clean"/></exec>
-                                <exec executable="./configure"/>
-                                <exec executable="make"><arg value="native"/></exec>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
