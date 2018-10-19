@@ -1,7 +1,7 @@
 
 package jcurses.system;
 
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -49,58 +49,53 @@ public class Toolkit {
     private static Hashtable __clips = new Hashtable();
     private static short __maxColorPairNumber = - 1;
     private static String __encoding;
-    // private static final String JAR_RESOURCE         = "jar:file:";
-    // private static final String FILE_RESOURCE        = "file:";
     private static final String LIBRARY_NAME = "jcurses";
 
     static {
-    	List<String> searchPaths = new ArrayList<String>();
-    	final String osName = System.getProperty("os.name").toLowerCase();
-    	String libExtension = null;
-		if (osName.indexOf("linux") >= 0) {
-    		libExtension = ".so";
-		} else if (osName.indexOf("win") >= 0) {
-    		libExtension = ".dll";
-		} else if (osName.indexOf("mac") >= 0) {
-    		libExtension = ".jnilib"; // TODO not sure
-    	}
-    	// $PWD/jcurses.so
-    	searchPaths.add(System.getProperty("user.dir") + "/" + LIBRARY_NAME + libExtension);
-    	// $PWD/libjcurses.so
-    	searchPaths.add(System.getProperty("user.dir") + "/lib" + LIBRARY_NAME + libExtension);
-    	// $PWD/lib/jcurses.so
-    	searchPaths.add(System.getProperty("user.dir") + "/lib/" + LIBRARY_NAME + libExtension);
-    	// $PWD/lib/libjcurses.so
-    	searchPaths.add(System.getProperty("user.dir") + "/lib/lib" + LIBRARY_NAME + libExtension);
+        String libFilename = System.mapLibraryName(LIBRARY_NAME);
+        //First, check if the library is present in the java.library.path
 
-    	// $HOME/jcurses.so
-    	searchPaths.add(System.getProperty("user.home") + "/" + LIBRARY_NAME + libExtension);
-    	// $HOME/libjcurses.so
-    	searchPaths.add(System.getProperty("user.home") + "/lib" + LIBRARY_NAME + libExtension);
-    	// $PWD/.local/lib/jcurses.so
-    	searchPaths.add(System.getProperty("user.home") + ".local/lib/" + LIBRARY_NAME + libExtension);
-    	// $PWD/.local/lib/libjcurses.so
-    	searchPaths.add(System.getProperty("user.home") + ".local/lib/lib" + LIBRARY_NAME + libExtension);
+        boolean found = false;
+        try {
+            System.loadLibrary(LIBRARY_NAME);
+            found = true;
+        } catch (UnsatisfiedLinkError e) {
+            System.err.println("Toolkit: Library " + libFilename + " not found in the java.library.path.");
+        }
 
-    	
-    	boolean foundInPath = false;
-		for (String sp : searchPaths) {
-    		try {
-    			System.load(sp);
-    			foundInPath = true;
-    		} catch (UnsatisfiedLinkError e) {
-    			System.out.println("Not found in " + sp);
-    		}
-    	}
-		if (!foundInPath) {
-			try {
-				System.loadLibrary(LIBRARY_NAME);
-			} catch (UnsatisfiedLinkError e) {
-				System.out.println("Found Library neither in the default search paths, not in the java.system.path. Stopping");
-				System.exit(-1);
-			}
-		}
-        // loadLibrary();
+        if (!found) {
+            //Second, try to export bundled library
+            InputStream in = Toolkit.class.getResourceAsStream("/" + libFilename);
+            if (in == null) {
+                System.err.println("Toolkit: Library is not present bundled in the jar file.");
+            } else {
+                try {
+                    int r;
+                    byte[] buf = new byte[1024];
+                    File tmpFile = File.createTempFile(libFilename, "");
+
+                    try (InputStream inStm = in) {
+                        try (OutputStream out = new FileOutputStream(tmpFile)) {
+                            while ((r = inStm.read(buf)) > 0) {
+                                out.write(buf, 0, r);
+                            }
+                        }
+                    }
+
+                    System.load(tmpFile.toString());
+                    found = true;
+                } catch (Exception ex) {
+                    System.err.println("Toolkit: Error while exporting bundled library to temporary folder.");
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        if (!found) {
+            System.err.println("Toolkit: Unable to find library " + libFilename + " in the java library path nor bundled. Cannot initialize ncurses.");
+            System.exit(-1);
+        }
+
         fillBasicColors(__basicColors);
         fillAttributes(__attributes);
         fillColorPairs();
