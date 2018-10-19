@@ -18,6 +18,6 @@ native: java include
 include: java;$(JAVAH) -classpath $(CLASSPATH) -d @srcdir@/src/native/include jcurses.system.Toolkit
 clean: ;rm -rf @srcdir@/classes/jcurses @srcdir@/lib/libjcurses.so @srcdir@/lib/jcurses.jar @srcdir@/src/native/include/*.h @srcdir@/config.status @srcdir@/config.log @srcdir@/Makefile @srcdir@/config.cache
 native:java include;$(GCC) $(GCCFLAGS) -o lib/libjcurses.so $(CURSES) src/native/Toolkit.c   
-jar: java;cd classes/ && $(JAR) -cvf ../lib/jcurses.jar *
+jar: java;cd classes/ && $(JAR) -cvf ../lib/jcurses.jar ../lib/*.so ../lib/*.dylib ../lib/*.dll *
 test: ;$(JAVA) -classpath @srcdir@/lib/jcurses.jar -Djcurses.protocol.filename=jcurses.log jcurses.tests.Test
 install: include;echo $(PREFIX)
