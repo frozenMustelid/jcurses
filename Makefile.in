@@ -12,7 +12,7 @@ PREFIX=@prefix@
 
 default: native
 all: jar native docs
-java: ;$(JAVAC) -Xlint:deprecation -classpath $(CLASSPATH) -d  @srcdir@/classes `find @srcdir@/src/jcurses -name *.java`
+java: ; mkdir -p @srcdir@/classes && $(JAVAC) -Xlint:deprecation -classpath $(CLASSPATH) -d  @srcdir@/classes `find @srcdir@/src/jcurses -name *.java`
 docs: ;$(JAVADOC) -classpath $(CLASSPATH) -sourcepath @srcdir@/src -d @srcdir@/doc/javadoc -Xdoclint:none jcurses.dialogs jcurses.event jcurses.system jcurses.util jcurses.widgets
 native: java include
 include: java;$(JAVAH) -classpath $(CLASSPATH) -d @srcdir@/src/native/include jcurses.system.Toolkit
