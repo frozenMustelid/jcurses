@@ -393,7 +393,7 @@ public class TextComponent extends Widget
       setCursorLocation(_cursPosX, newYPos, true);
       redrawAfterCursorMove(bCursorPosX, bCursorPosY, bFirstChar, bFirstLine, bChar);
     }
-    else if ( ch.getCode() == InputChar.KEY_BACKSPACE )
+    else if ( ch.getCode() == InputChar.KEY_BACKSPACE || ch.getCode() == '\b' || ch.getCode() == 127 )
     {
       deleteCharBeforeCursorLocation();
 
