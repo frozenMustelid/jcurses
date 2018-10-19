@@ -8,7 +8,29 @@ for each in `ls ${javahome}/include` ;do
   fi;
 done;
 echo "JAVAOS=${javaos}"
+
+case $javaos in
+"linux")
+  libfilename="libjcurses.so"
+  ;;
+"darwin")
+  libfilename="libjcurses.dylib"
+  ;;
+
+"win32")
+  libfilename="jcurses.dll"
+  ;;
+
+*)
+  echo "Unrecognized platform. Aborting"
+  exit 1
+  ;;
+esac
+
+echo "LIBFILENAME=$libfilename"
+
 AC_SUBST(javaos)
+AC_SUBST(libfilename)
 AC_CHECK_PROG(gcc,gcc,gcc)
 AC_PROG_CC
 AC_CHECK_LIB(curses,initscr,curses=-lcurses)

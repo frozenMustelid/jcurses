@@ -593,6 +593,7 @@ LDFLAGS
 CFLAGS
 CC
 gcc
+libfilename
 javaos
 javahome
 target_alias
@@ -1820,6 +1821,28 @@ for each in `ls ${javahome}/include` ;do
   fi;
 done;
 echo "JAVAOS=${javaos}"
+
+case $javaos in
+"linux")
+  libfilename="libjcurses.so"
+  ;;
+"darwin")
+  libfilename="libjcurses.dylib"
+  ;;
+
+"win32")
+  libfilename="jcurses.dll"
+  ;;
+
+*)
+  echo "Unrecognized platform. Aborting"
+  exit 1
+  ;;
+esac
+
+echo "LIBFILENAME=$libfilename"
+
+
 
 # Extract the first word of "gcc", so it can be a program name with args.
 set dummy gcc; ac_word=$2
