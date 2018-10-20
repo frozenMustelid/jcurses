@@ -412,80 +412,36 @@ JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_drawVerticalThickLine (JNIEnv
 
 
 
-JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_drawCorner (JNIEnv * env, jclass class, jint x1, jint y1,
-																jint x2, jint y2, jshort number, jlong attr,jshort alignment) {
-	int cornerX, cornerY, otherX, otherY;
+JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_drawCorner (JNIEnv * env, jclass class, jint aX, jint aY,
+																jint aPos, jshort number, jlong attr) {
+	
 	char character;
 
    	setTextMode(number+1, attr);
+	
+	switch( aPos )
+    {
+    case jcurses_system_Toolkit_LL_CORNER:
+        character = ACS_LLCORNER;
+        break;
 
+    case jcurses_system_Toolkit_LR_CORNER:
+        character = ACS_LRCORNER;
+        break;
 
-	if ((x1 == x2) && (y1 == y2)) {
-		switch (alignment) {
-			case 2:
-				character = ACS_LLCORNER;
-				break;
-			case 3:
-				character = ACS_LRCORNER;
-				break;
-			case 4:
-				character = ACS_ULCORNER;
-				break;
-			case 5:
-				character = ACS_URCORNER;
-				break;
-			 default:
-				character = ACS_LLCORNER;
-				break;
-		}
-		drawChar(x1, y1,number, attr,character);
-	} else if (x1 == x2) {
-	   drawLine(y1, y2, x1, number, attr, 0);
-	}  else if (y1 == y2) {
-	   drawLine(x1, x2, y1, number, attr, 1);
-	}  else {
+    case jcurses_system_Toolkit_UL_CORNER:
+        character = ACS_ULCORNER;
+        break;
 
-	   if (alignment) {
-	   	  if (y1 > y2) {
-			  cornerY = y1;
-			  otherY = y2;
-			  cornerX = x2;
-			  otherX = x1;
-		  } else {
-			  cornerY = y2;
-			  otherY = y1;
-			  cornerX = x1;
-			  otherX = x2;
-		  }
-	   } else {
-	   	  if (y1 > y2) {
-			  cornerY = y2;
-			  otherY = y1;
-			  cornerX = x1;
-			  otherX = x2;
-		  } else {
-			  cornerY = y1;
-			  otherY = y2;
-			  cornerX = x2;
-			  otherX = x1;
-		  }
-	   }
-	   if ((cornerX < otherX) && (cornerY < otherY)) {
-	   	  character = ACS_ULCORNER;
-	   } else if ((cornerX > otherX) && (cornerY  < otherY)) {
-		 character = ACS_URCORNER;
-	   } else if ((cornerX < otherX) && (cornerY  > otherY)) {
-		 character = ACS_LLCORNER;
-	   } else if ((cornerX > otherX) && (cornerY  > otherY)) {
-		 character = ACS_LRCORNER;
-	   }
+    case jcurses_system_Toolkit_UR_CORNER:
+        character = ACS_URCORNER;
+        break;
 
-	   drawLine(cornerX, otherX, cornerY, number, attr, 1);
-	   drawLine(cornerY, otherY, cornerX, number, attr, 0);
-	   drawChar(cornerX, cornerY,number, attr,character);
-
-	}
-
+    default:
+        return;
+    }
+	
+	drawChar(aX, aY, number, attr, character);
 }
 
 
