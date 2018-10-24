@@ -23,14 +23,14 @@ import jcurses.util.Rectangle;
  * window is created or explicitly brought to the top.
  */
 public class Window {
-	private static InputChar __defaultClosingChar = new InputChar(InputChar.KEY_ESC);
-	private static InputChar __defaultFocusChangeChar = new InputChar(InputChar.KEY_TAB);
-	private static InputChar __upChar = new InputChar(InputChar.KEY_UP);
-	private static InputChar __downChar = new InputChar(InputChar.KEY_DOWN);
-	private static InputChar __leftChar = new InputChar(InputChar.KEY_LEFT);
-	private static InputChar __rightChar = new InputChar(InputChar.KEY_RIGHT);
-	private InputChar _closingChar = getDefaultClosingChar();
-	private InputChar _focusChangeChar = getDefaultFocusChangeChar();
+	private static final InputChar INPUT_CLOSING_CHAR = InputChar.Control.ESCAPE;
+	private static final InputChar INPUT_FOCUS_CHANGE = InputChar.Control.TAB;
+	private static final InputChar INPUT_MOVE_UP = InputChar.Function.KEY_UP;
+	private static final InputChar INPUT_MOVE_DOWN = InputChar.Function.KEY_DOWN;
+	private static final InputChar INPUT_MOVE_LEFT = InputChar.Function.KEY_LEFT;
+	private static final InputChar INPUT_MOVE_RIGHT = InputChar.Function.KEY_RIGHT;
+	private InputChar currentClosingInput = getDefaultClosingChar();
+	private InputChar currentFocusChangeInput = getDefaultFocusChangeChar();
 	private Hashtable _shortCutsTable = new Hashtable();
 	private Vector _shortCutsList = new Vector();
 
@@ -166,7 +166,7 @@ public class Window {
 	 * @param  character  new window's closing character - {@code null} means no closing character
 	 */
 	public void setClosingChar(InputChar character) {
-		_closingChar = character;
+		currentClosingInput =  character;
 	}
 
 	/**
@@ -176,7 +176,7 @@ public class Window {
 	 * @return    window's closing character - {@code null} means no closing character
 	 */
 	public InputChar getClosingChar() {
-		return _closingChar;
+		return currentClosingInput;
 	}
 
 	/**
@@ -203,7 +203,7 @@ public class Window {
 	 * @param  character  new window's focus changing charater
 	 */
 	public void setFocusChangeChar(InputChar character) {
-		_focusChangeChar = character;
+		currentFocusChangeInput = character;
 	}
 
 	/**
@@ -212,7 +212,7 @@ public class Window {
 	 * @return    window's focus changing charater
 	 */
 	public InputChar getFocusChangeChar() {
-		return _focusChangeChar;
+		return currentFocusChangeInput;
 	}
 
 	/**
@@ -574,13 +574,13 @@ public class Window {
 			tryToClose();
 		} else if (inp.equals(getFocusChangeChar())) {
 			changeFocus();
-		} else if (inp.equals(__upChar)) {
+		} else if (inp.equals(INPUT_MOVE_UP)) {
 			moveFocus(DIR_UP);
-		} else if (inp.equals(__downChar)) {
+		} else if (inp.equals(INPUT_MOVE_DOWN)) {
 			moveFocus(DIR_DOWN);
-		} else if (inp.equals(__leftChar)) {
+		} else if (inp.equals(INPUT_MOVE_LEFT)) {
 			moveFocus(DIR_LEFT);
-		} else if (inp.equals(__rightChar)) {
+		} else if (inp.equals(INPUT_MOVE_RIGHT)) {
 			moveFocus(DIR_RIGHT);
 		} else if (isShortCut(inp)) {
 			getWidgetByShortCut(inp).handleInput(inp);
@@ -647,7 +647,7 @@ public class Window {
 	 * @return    The defaultClosingChar value
 	 */
 	private InputChar getDefaultClosingChar() {
-		return __defaultClosingChar;
+		return INPUT_CLOSING_CHAR;
 	}
 
 	/**
@@ -656,7 +656,7 @@ public class Window {
 	 * @return    The defaultFocusChangeChar value
 	 */
 	private InputChar getDefaultFocusChangeChar() {
-		return __defaultFocusChangeChar;
+		return INPUT_FOCUS_CHANGE;
 	}
 
 	/**

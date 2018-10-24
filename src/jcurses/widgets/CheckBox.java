@@ -15,7 +15,7 @@ import jcurses.util.Rectangle;
  */
 public class CheckBox extends Widget
 {
-  private static InputChar            __changeStatusChar = new InputChar(' ');
+  private static final InputChar INPUT_CHANGE_STATUS = InputChar.literal(' ');
   private boolean                     _checked           = false;
   private ValueChangedListenerManager _listenerManager   = new ValueChangedListenerManager();
 
@@ -136,7 +136,7 @@ public class CheckBox extends Widget
 
   protected boolean handleInput(InputChar ch)
   {
-    if ( ch.equals(__changeStatusChar) )
+    if ( ch.equals(INPUT_CHANGE_STATUS) )
     {
       setValue(( _checked ) ? false : true);
       paint();

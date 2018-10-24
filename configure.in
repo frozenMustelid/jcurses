@@ -3,28 +3,28 @@ AC_PATH_PROG(javahome,java)
 javahome="${JAVA_HOME}"
 echo "JAVAHOME=${javahome}"
 for each in `ls ${javahome}/include` ;do
-  if [ test -d ${javahome}/include/${each} ] ;then
-     javaos=${each}
-  fi;
+if [ test -d ${javahome}/include/${each} ] ;then
+javaos=${each}
+fi;
 done;
 echo "JAVAOS=${javaos}"
 
 case $javaos in
 "linux")
-  libfilename="libjcurses.so"
-  ;;
+libfilename="libjcurses.so"
+;;
 "darwin")
-  libfilename="libjcurses.dylib"
-  ;;
+libfilename="libjcurses.dylib"
+;;
 
 "win32")
-  libfilename="jcurses.dll"
-  ;;
+libfilename="jcurses.dll"
+;;
 
 *)
-  echo "Unrecognized platform. Aborting"
-  exit 1
-  ;;
+echo "Unrecognized platform. Aborting"
+exit 1
+;;
 esac
 
 echo "LIBFILENAME=$libfilename"
@@ -33,8 +33,83 @@ AC_SUBST(javaos)
 AC_SUBST(libfilename)
 AC_CHECK_PROG(gcc,gcc,gcc)
 AC_PROG_CC
-AC_CHECK_LIB(curses,initscr,curses=-lcurses)
-AC_CHECK_LIB(ncurses,initscr,curses=-lncurses)
+AC_CHECK_LIB(ncursesw,get_wch,curses=-lncursesw)
+
+if test -z "$curses"; then
+AC_CHECK_LIB(ncurses,get_wch,curses=-lncurses)
+fi
+
+if test -z "$curses"; then
+AC_CHECK_LIB(curses,get_wch,curses=-lcurses)
+fi
+
+AC_MSG_CHECKING(if get_wch is defined on curses.h)
+
+# Check for curses.h
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#define NCURSES_WIDECHAR 1
+#include <curses.h>
+int main() {
+wint_t ch;
+get_wch(&ch);
+return 0;
+}
+]])], [curses_h_param="-DHAVE_CURSES_H"])
+
+if test -z "$curses_h_param"; then
+
+# Not found. Check for ncursesw/curses.h
+AC_MSG_RESULT(no)
+AC_MSG_CHECKING(if get_wch is defined on ncursesw/curses.h)
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#define NCURSES_WIDECHAR 1
+#include <ncursesw/curses.h>
+int main() {
+wint_t ch;
+get_wch(&ch);
+return 0;
+}
+]])], [curses_h_param="-DHAVE_NCURSESW_NCURSES_H"])
+
+if test -z "$curses_h_param"; then
+
+# Not found. Check for ncurses/curses.h
+AC_MSG_RESULT(no)
+AC_MSG_CHECKING(if get_wch is defined on ncurses/curses.h)
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#define NCURSES_WIDECHAR 1
+#include <ncurses/curses.h>
+int main() {
+wint_t ch;
+get_wch(&ch);
+return 0;
+}
+]])], [curses_h_param="-DHAVE_NCURSES_NCURSES_H"])
+
+if test -z "$curses_h_param"; then
+# Not found. abort.
+AC_MSG_RESULT(no)
+
+AC_MSG_ERROR(Cannot determine a valid header file of curses to use.)
+else
+
+# Found in ncurses/curses.h
+AC_MSG_RESULT(yes)
+fi
+
+else
+
+# Found in ncursesw/curses.h
+AC_MSG_RESULT(yes)
+fi
+
+else
+
+# Found in curses.h
+AC_MSG_RESULT(yes)
+fi
+
+AC_SUBST(curses_h_param)
 AC_SUBST(curses)
 AC_OUTPUT(Makefile)
 

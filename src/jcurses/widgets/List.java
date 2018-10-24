@@ -19,8 +19,8 @@ import jcurses.util.Rectangle;
  */
 public class List extends Widget implements IScrollable
 {
-  private static InputChar    __changeStatusChar = new InputChar(' ');
-  private static InputChar    __callItemChar     = new InputChar('\n');
+  private static final InputChar INPUT_CHANGE_STATUS = InputChar.literal(' ');
+  private static final InputChar INPUT_ENTER = InputChar.Control.ENTER;
   private ItemListenerManager _listenerManager   = new ItemListenerManager();
   private ScrollbarPainter    _scrollbars        = null;
   private String              _title             = null;
@@ -520,7 +520,7 @@ public class List extends Widget implements IScrollable
 
   protected InputChar getChangeStatusChar()
   {
-    return __changeStatusChar;
+    return INPUT_CHANGE_STATUS;
   }
 
   protected boolean isFocusable()
@@ -594,63 +594,63 @@ public class List extends Widget implements IScrollable
     if ( _items.size() == 0 )
       return false;
 
-    if ( ch.getCode() == InputChar.KEY_RIGHT )
+    if ( ch.getCode() == InputChar.Function.KEY_RIGHT.getCode() )
     {
       if ( incrementStartPos() )
         refresh();
 
       return true;
     }
-    else if ( ch.getCode() == InputChar.KEY_LEFT )
+    else if ( ch.getCode() == InputChar.Function.KEY_LEFT.getCode() )
     {
       if ( decrementStartPos() )
         refresh();
 
       return true;
     }
-    else if ( ch.getCode() == InputChar.KEY_UP )
+    else if ( ch.getCode() == InputChar.Function.KEY_UP.getCode() )
     {
       if ( decrementTrack() )
         redraw(( backupStartIndex == _startIndex ), _trackedIndex, backupTrackedIndex);
 
       return true;
     }
-    else if ( ch.getCode() == InputChar.KEY_DOWN )
+    else if ( ch.getCode() == InputChar.Function.KEY_DOWN.getCode() )
     {
       if ( incrementTrack() )
         redraw(( backupStartIndex == _startIndex ), _trackedIndex, backupTrackedIndex);
 
       return true;
     }
-    else if ( ch.getCode() == InputChar.KEY_HOME )
+    else if ( ch.getCode() == InputChar.Function.KEY_HOME.getCode() )
     {
       if ( setTrack(0) )
         redraw(( backupStartIndex == _startIndex ), _trackedIndex, backupTrackedIndex);
 
       return true;
     }
-    else if ( ch.getCode() == InputChar.KEY_END )
+    else if ( ch.getCode() == InputChar.Function.KEY_END.getCode() )
     {
       if ( setTrack(getItemsCount() - 1) )
         redraw(( backupStartIndex == _startIndex ), _trackedIndex, backupTrackedIndex);
 
       return true;
     }
-    else if ( ch.getCode() == InputChar.KEY_NPAGE )
+    else if ( ch.getCode() == InputChar.Function.KEY_PGDOWN.getCode() )
     {
       if ( incrementPage() )
         redraw(( backupStartIndex == _startIndex ), _trackedIndex, backupTrackedIndex);
 
       return true;
     }
-    else if ( ch.getCode() == InputChar.KEY_PPAGE )
+    else if ( ch.getCode() == InputChar.Function.KEY_PGUP.getCode() )
     {
       if ( decrementPage() )
         redraw(( backupStartIndex == _startIndex ), _trackedIndex, backupTrackedIndex);
 
       return true;
     }
-    else if ( ch.equals(__changeStatusChar) && getSelectable() )
+    else if ( ch.equals(INPUT_CHANGE_STATUS) && getSelectable() )
     {
       if ( isSelected(_trackedIndex) )
         deselect(_trackedIndex);
@@ -659,7 +659,7 @@ public class List extends Widget implements IScrollable
 
       return true;
     }
-    else if ( ch.equals(__callItemChar) )
+    else if ( ch.equals(INPUT_ENTER) )
     {
       callItem(_trackedIndex);
       return true;

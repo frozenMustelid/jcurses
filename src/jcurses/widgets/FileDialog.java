@@ -19,7 +19,7 @@ import java.io.FileFilter;
  */
 public class FileDialog extends Dialog implements WidgetsConstants, ItemListener, ActionListener
 {
-  private static InputChar __returnChar   = new InputChar('\n');
+  private static InputChar INPUT_RETURN = InputChar.Control.ENTER;
   Button                   _cancelButton  = null;
   Button                   _okButton      = null;
   JCursesFileFilterFactory _filterFactory = new DefaultFileFilterFactory();
@@ -278,7 +278,7 @@ public class FileDialog extends Dialog implements WidgetsConstants, ItemListener
 
   protected void onChar(InputChar inp)
   {
-    if ( inp.equals(__returnChar) )
+    if ( inp.equals(INPUT_RETURN) )
     {
       if ( _filterField.hasFocus() )
       {

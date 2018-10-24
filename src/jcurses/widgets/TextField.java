@@ -112,14 +112,7 @@ public class TextField extends TextComponent
    */
   protected boolean handleInput(InputChar ch)
   {
-    boolean filter = ( ch.getCode() == InputChar.KEY_UP ) || ( ch.getCode() == InputChar.KEY_DOWN ) || ( ch.getCode() == InputChar.KEY_NPAGE )
-        || ( ch.getCode() == InputChar.KEY_PPAGE ) || ( ch.getCode() == InputChar.KEY_END ) || ( ch.getCode() == InputChar.KEY_HOME )
-        || ( ( ! ch.isSpecialCode() ) && ( ch.getCharacter() == '\n' ) ) || ( ( ! ch.isSpecialCode() ) && ( ch.getCharacter() == '\r' ) );
-
-    if ( ! filter )
-      return super.handleInput(ch);
-
-    return false;
+      return ch.isPrintable() && super.handleInput(ch);
   }
 
   private String getDelimiterString()

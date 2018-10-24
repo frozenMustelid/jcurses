@@ -9,6 +9,7 @@ import jcurses.event.ValueChangedListener;
 import jcurses.event.WindowEvent;
 import jcurses.event.WindowListener;
 import jcurses.system.CharColor;
+import jcurses.system.InputChar;
 import jcurses.system.Toolkit;
 import jcurses.util.Message;
 import jcurses.util.Protocol;
@@ -52,13 +53,13 @@ public class Test extends Window implements ItemListener, ActionListener, ValueC
 
     _b1 = new Button("OK");
 
-    _b1.setShortCut('o');
+    _b1.setShortCut(InputChar.literal('o'));
 
     _b1.addListener(this);
 
     _b2 = new Button("Cancel");
 
-    _b2.setShortCut('p');
+    _b2.setShortCut(InputChar.literal('p'));
 
     _b2.addListener(this);
 

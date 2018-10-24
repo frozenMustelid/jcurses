@@ -18,10 +18,10 @@ import jcurses.util.Rectangle;
  * generates an <code>ActionEvent</code>, that is delegated to registered listeners.
  */
 public class Button extends Widget {
-    private static InputChar __actionChar = new InputChar('\n');
-    private ActionListenerManager _listenerManager = new ActionListenerManager();
-    private InputChar _shortCut = null;
-    private String _label = null;
+    private static final InputChar INPUT_ACTION = InputChar.Control.ENTER;
+    private ActionListenerManager listenManager = new ActionListenerManager();
+    private InputChar shortCut = null;
+    private String label = null;
 
     /**
      * The constructor
@@ -38,14 +38,14 @@ public class Button extends Widget {
      * @param  aLabel  buttton's label
      */ 
     public void setLabel(String aLabel) {
-        _label = aLabel;
+        label = aLabel;
     }
 
     /**
      * @return    button's label
      */ 
     public String getLabel() {
-        return _label;
+        return label;
     }
 
     /**
@@ -96,7 +96,7 @@ public class Button extends Widget {
      * @param  listener  listener to add
      */ 
     public void addListener(ActionListener listener) {
-        _listenerManager.addListener(listener);
+        listenManager.addListener(listener);
     }
 
     /**
@@ -105,7 +105,7 @@ public class Button extends Widget {
      * @param  listener  listener to remove
      */ 
     public void removeListener(ActionListener listener) {
-        _listenerManager.removeListener(listener);
+        listenManager.removeListener(listener);
     }
 
     /**
@@ -115,8 +115,8 @@ public class Button extends Widget {
      *
      * @param  c  The new shortCut value
      */ 
-    public void setShortCut(char c) {
-        _shortCut = new InputChar(c);
+    public void setShortCut(InputChar c) {
+        shortCut = c;
     }
 
     /**
@@ -125,7 +125,7 @@ public class Button extends Widget {
      * @return    The preferredSize value
      */ 
     protected Rectangle getPreferredSize() {
-        return new Rectangle(_label.length() + 4, 1);
+        return new Rectangle(label.length() + 4, 1);
     }
 
     /**
@@ -134,10 +134,10 @@ public class Button extends Widget {
     protected void doPaint() {
         //System.err.println("Button<" + _label + ">.paint()");
         if (hasFocus()) {
-            Toolkit.printString("< " + _label + " >", getRectangle(), getSelectedColors());
+            Toolkit.printString("< " + label + " >", getRectangle(), getSelectedColors());
 
         } else {
-            Toolkit.printString("< " + _label + " >", getRectangle(), getActionColors());
+            Toolkit.printString("< " + label + " >", getRectangle(), getActionColors());
 
 
             drawShortCutIfNeeded();
@@ -175,7 +175,7 @@ public class Button extends Widget {
      * @return     Description of the Return Value
      */ 
     protected boolean handleInput(InputChar ch) {
-        if ((ch.equals(__actionChar)) || ((getShortCut() != null) && (getShortCut().equals(ch)))) {
+        if ((ch.equals(INPUT_ACTION)) || ((getShortCut() != null) && (getShortCut().equals(ch)))) {
             doAction();
             return true;
         }
@@ -203,7 +203,7 @@ public class Button extends Widget {
      * @return    The shortCut value
      */ 
     private InputChar getShortCut() {
-        return _shortCut;
+        return shortCut;
     }
 
     /**
@@ -213,10 +213,10 @@ public class Button extends Widget {
         InputChar shortCut = getShortCut();
         if (shortCut != null) {
             String c = shortCut.toString();
-            if (_label != null) {
-                int index = _label.toLowerCase().indexOf(c.toLowerCase());
+            if (label != null) {
+                int index = label.toLowerCase().indexOf(c.toLowerCase());
                 if (index != - 1) {
-                    Toolkit.printString(_label.substring(index, index + 1), getAbsoluteX() + index + 2, getAbsoluteY(), getShortCutColors());
+                    Toolkit.printString(label.substring(index, index + 1), getAbsoluteX() + index + 2, getAbsoluteY(), getShortCutColors());
 
                 }
             }
@@ -227,7 +227,7 @@ public class Button extends Widget {
      *  Description of the Method
      */ 
     private void doAction() {
-        _listenerManager.handleEvent(new ActionEvent(this));
+        listenManager.handleEvent(new ActionEvent(this));
     }
 
 }

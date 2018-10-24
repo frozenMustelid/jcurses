@@ -1,9 +1,24 @@
+#define NCURSES_WIDECHAR 1
 #include "include/jcurses_system_Toolkit.h"
+#include "include/jcurses_system_KeyDefs.h"
+
+#if defined(HAVE_NCURSESW_NCURSES_H)
+#include <ncursesw/curses.h>
+#elif defined(HAVE_NCURSES_NCURSES_H)
+#include <ncurses/curses.h>
+#else
 #include <curses.h>
+#endif
+
 #include <stdio.h>
 #include <string.h>
+#include <locale.h>
+#include <ctype.h>
+#include <wctype.h>
+#include <signal.h>
+#include <termios.h>
+#include <unistd.h>
 
-//define JCURSES_ATTRIBUTES(number,att) (has_colors())?(att|COLOR_PAIR(number+1)):((number==0)?A_NORMAL:((number==1)?A_REVERSE:A_BOLD))
 #define JCURSES_ATTRIBUTES(number,att) (att|COLOR_PAIR(number+1))
 
 FILE * logStream = NULL;
@@ -17,6 +32,24 @@ void initLog()
 
 static int buffer = 1;
 static int paintingAction = 0;
+static int backspaceKeyCode;
+
+void add_widec(wchar_t ch) {
+  wchar_t str[2];
+  str[1] = 0;
+  str[0] = ch;
+
+  addwstr(str);
+}
+
+void echo_widec(wchar_t ch) {
+  wchar_t str[2];
+  str[1] = 0;
+  str[0] = ch;
+
+  addwstr(str);
+  refresh();
+}
 
 void endPainting()
 {
@@ -50,35 +83,41 @@ void fill_region(int aX, int aY, int aWide, int aHigh, jshort aNumber, jlong aAt
     endPainting();
 }
 
-/*
-void clear_region(int aX, int aY, int aWide, int aHigh)
-{
-    fill_region(aX, aY, aWide, aHigh, number, attr, ' ');
-}
-
-void fill_region2(int aX, int aY, int aWide, int aHigh, jshort aNumber, jlong aAttr, chtype aCh)
-{
-    if( aHigh > 0 && aWide > 0 && aX >= 0 && aY >= 0 )
-    {
-        int mPos;
-        aCh |= JCURSES_ATTRIBUTES(aNumber,aAttr);
-        chtype line[aWide];
-        //memset(line, sizeof(line), 0);
-
-        for(mPos = 0; mPos < aWide; mPos++)
-            line[mPos] = aCh;
-
-        for(mPos = aY; mPos < (aY + aHigh); mPos++)
-        {
-            mvaddchnstr(mPos, aX, &line[0], aWide);
-	    if(!buffer)
-              refresh();
-        }
+int mapFunctionKey(unsigned short* code) {
+    switch (*code) {
+        case KEY_DOWN:
+            *code = jcurses_system_KeyDefs_KEY_DOWN;
+            break;
+        case KEY_UP:
+            *code = jcurses_system_KeyDefs_KEY_UP;
+            break;
+        case KEY_LEFT:
+            *code = jcurses_system_KeyDefs_KEY_LEFT;
+            break;
+        case KEY_RIGHT:
+            *code = jcurses_system_KeyDefs_KEY_RIGHT;
+            break;
+        case KEY_DC:
+            *code = jcurses_system_KeyDefs_KEY_DELETE;
+            break;
+        case KEY_HOME:
+            *code = jcurses_system_KeyDefs_KEY_HOME;
+            break;
+        case KEY_END:
+            *code = jcurses_system_KeyDefs_KEY_END;
+            break;
+        case KEY_NPAGE:
+            *code = jcurses_system_KeyDefs_KEY_PGDOWN;
+            break;
+        case KEY_PPAGE:
+            *code = jcurses_system_KeyDefs_KEY_PGUP;
+            break;
+         default:
+            return -1;
     }
-    endPainting();
-}
-*/
 
+    return 0;
+}
 
 jint computeChtype(jshort number)
 {
@@ -146,14 +185,23 @@ JNIEXPORT jint JNICALL Java_jcurses_system_Toolkit_computeChtype (JNIEnv * env, 
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_init (JNIEnv * env, jclass class)
 {
-    initLog();
-    initscr();  
-    keypad(stdscr, TRUE);
-    noecho();
-    halfdelay(2);
-    curs_set(0);
+    setlocale(LC_ALL, "");  //Set to any locale (for preventing issues with get_wch localization)
+    initscr();              //Init curses screen
+    keypad(stdscr, TRUE);   //Set the keypad to TRUE so the function keys are automatically recognized and passed to the program.
+    noecho();               //Disable echoing the input.
+    raw();                  //Do not generate signals on Ctrl+C, Ctrl+Q, etc: let the program control them by itself.
+    nonl();                 //Do not treat the enter as a new line, just pass the key to the program.
+    curs_set(0);            //Hide cursor.
     if (has_colors())
-        start_color();
+        start_color();      //Init colors, if available.
+
+    //TODO Log errors someway
+    struct termios tty;
+    tcgetattr(0, &tty);
+    backspaceKeyCode = tty.c_cc[VERASE];    // Take the terminal backspace key code from the termios struct.
+    if (backspaceKeyCode == _POSIX_VDISABLE) {
+        backspaceKeyCode = -1; //TODO Notify jcurses about this
+    }
 }
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_clearScreen (JNIEnv * env, jclass class, jshort number, jlong attr)
@@ -232,13 +280,13 @@ JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_drawCorner (JNIEnv *env, jcla
       echochar(ch);
 }
 
-JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_printString (JNIEnv * env, jclass class, jbyteArray bytes, jint x, jint y, jint width, jint height, jshort number, jlong attr)
+JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_printString (JNIEnv * env, jclass class, jcharArray chars, jint x, jint y, jint width, jint height, jshort number, jlong attr)
 {
     int j=0;
     int xpos,ypos;
-    int length = (*env)->GetArrayLength(env,bytes);
-    unsigned char c;
-    signed char * charArray = (*env)->GetByteArrayElements(env, bytes, NULL);
+    int length = (*env)->GetArrayLength(env,chars);
+    wchar_t c;
+    unsigned short * charArray = (*env)->GetCharArrayElements(env, chars, NULL);
 
     attrset(JCURSES_ATTRIBUTES(number,attr));
 
@@ -248,6 +296,7 @@ JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_printString (JNIEnv * env, jc
 
     for( j=0; j<length; j++ )
     {
+        //TODO Support for multi-wide characters
         c = charArray[j];
 
         if( c =='\r' )
@@ -270,9 +319,9 @@ JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_printString (JNIEnv * env, jc
             c = ' ';
 
 	if(buffer)
-          addch(c);
+          add_widec(c);
 	else
-          echochar(c);
+          echo_widec(c);
     }
 
     endPainting();
@@ -281,448 +330,57 @@ JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_printString (JNIEnv * env, jc
 
 JNIEXPORT jint JNICALL Java_jcurses_system_Toolkit_readByte (JNIEnv * env, jclass class)
 {
-    return wgetch(stdscr);
-}
+    wint_t c;
+    unsigned short ch;
+    int r = get_wch(&c);
+    ch = c & 0xffff;
 
 
-/*
-int keycodes[2][] = 
-{
-    { 0401, KEY_MIN },
-    { 0402, KEY_DOWN },
-    { 0403, KEY_UP },
-    { 0404, KEY_LEFT },
-    { 0405, KEY_RIGHT },
-    { 0406, KEY_HOME },
-    { 0407, KEY_BACKSPACE },
-    { 0410, KEY_F0 },
-    { 0411, KEY_F(1) },
-    { 0412, KEY_F(2) },
-    { 0413, KEY_F(3) },
-    { 0414, KEY_F(4) },
-    { 0415, KEY_F(5) },
-    { 0416, KEY_F(6) },
-    { 0417, KEY_F(7) },
-    { 0420, KEY_F(010) },
-    { 0421, KEY_F(011) },
-    { 0422, KEY_F(012) },
-    { 0423, KEY_F(013) },
-    { 0424, KEY_F(014) },
-    { 0510, KEY_DL },
-    { 0511, KEY_IL },
-    { 0512, KEY_DC },
-    { 0513, KEY_IC },
-    { 0514, KEY_EIC },
-    { 0515, KEY_CLEAR },
-    { 0516, KEY_EOS },
-    { 0517, KEY_EOL },
-    { 0520, KEY_SF },
-    { 0521, KEY_SR },
-    { 0522, KEY_NPAGE },
-    { 0523, KEY_PPAGE },
-    { 0524, KEY_STAB },
-    { 0525, KEY_CTAB },
-    { 0526, KEY_CATAB },
-    { 0527, KEY_ENTER },
-    { 0530, KEY_SRESET },
-    { 0531, KEY_RESET },
-    { 0532, KEY_PRINT },
-    { 0533, KEY_LL },
-    { 0534, KEY_A1 },
-    { 0535, KEY_A3 },
-    { 0536, KEY_B2 },
-    { 0537, KEY_C1 },
-    { 0540, KEY_C3 },
-    { 0541, KEY_BTAB },
-    { 0542, KEY_BEG },
-    { 0543, KEY_CANCEL },
-    { 0544, KEY_CLOSE },
-    { 0545, KEY_COMMAND },
-    { 0546, KEY_COPY },
-    { 0547, KEY_CREATE },
-    { 0550, KEY_END },
-    { 0551, KEY_EXIT },
-    { 0552, KEY_FIND },
-    { 0553, KEY_HELP },
-    { 0554, KEY_MARK },
-    { 0555, KEY_MESSAGE },
-    { 0556, KEY_MOVE },
-    { 0557, KEY_NEXT },
-    { 0560, KEY_OPEN },
-    { 0561, KEY_OPTIONS },
-    { 0562, KEY_PREVIOUS },
-    { 0563, KEY_REDO },
-    { 0564, KEY_REFERENCE },
-    { 0565, KEY_REFRESH },
-    { 0566, KEY_REPLACE },
-    { 0567, KEY_RESTART },
-    { 0570, KEY_RESUME },
-    { 0571, KEY_SAVE },
-    { 0572, KEY_SBEG },
-    { 0573, KEY_SCANCEL },
-    { 0574, KEY_SCOMMAND },
-    { 0575, KEY_SCOPY },
-    { 0576, KEY_SCREATE },
-    { 0577, KEY_SDC },
-    { 0600, KEY_SDL },
-    { 0601, KEY_SELECT },
-    { 0602, KEY_SEND },
-    { 0603, KEY_SEOL },
-    { 0604, KEY_SEXIT },
-    { 0605, KEY_SFIND },
-    { 0606, KEY_SHELP },
-    { 0607, KEY_SHOME },
-    { 0610, KEY_SIC },
-    { 0611, KEY_SLEFT },
-    { 0612, KEY_SMESSAGE },
-    { 0613, KEY_SMOVE },
-    { 0614, KEY_SNEXT },
-    { 0615, KEY_SOPTIONS },
-    { 0616, KEY_SPREVIOUS },
-    { 0617, KEY_SPRINT },
-    { 0620, KEY_SREDO },
-    { 0621, KEY_SRIGHT },
-    { 0622, KEY_SREPLACE },
-    { 0623, KEY_SRSUME },
-    { 0624, KEY_SSAVE },
-    { 0625, KEY_SSUSPEND },
-    { 0626, KEY_SUNDO },
-    { 0627, KEY_SUSPEND },
-    { 0630, KEY_UNDO },
-    { 0777, KEY_MAX }
-}
-*/
+    if (ch == 27) { //Meta key
+        nodelay(stdscr, TRUE); // Next get_wch will be non-blocking
 
+        r = get_wch(&c);
+        ch = c & 0xffff;
 
-JNIEXPORT jint JNICALL Java_jcurses_system_Toolkit_getSpecialKeyCode (JNIEnv * env, jclass class, jint code)
-{
-    int result = KEY_MAX; 
-    switch( code )
-    {
-    case 0401:
-        result = KEY_MIN;
-        break;
-    case 0402:
-        result = KEY_DOWN;
-        break;
-    case 0403:
-        result = KEY_UP;
-        break;
-    case 0404:
-        result = KEY_LEFT;
-        break;
-    case 0405:
-        result = KEY_RIGHT;
-        break;
-    case 0406:
-        result = KEY_HOME;
-        break;
-    case 0407:
-        result = KEY_BACKSPACE;
-        break;
-    case 0410:
-        result = KEY_F0;
-        break;
-    case 0411:
-        result = KEY_F(1);
-        break;
-    case 0412:
-        result = KEY_F(2);
-        break;
-    case 0413:
-        result = KEY_F(3);
-        break;
-    case 0414:
-        result = KEY_F(4);
-        break;
-    case 0415:
-        result = KEY_F(5);
-        break;
-    case 0416:
-        result = KEY_F(6);
-        break;
-    case 0417:
-        result = KEY_F(7);
-        break;
-    case 0420:
-        result = KEY_F(010);
-        break;
-    case 0421:
-        result = KEY_F(011);
-        break;
-    case 0422:
-        result = KEY_F(012);
-        break;
-    case 0423:
-        result = KEY_F(013);
-        break;
-    case 0424:
-        result = KEY_F(014);
-        break;
+        nodelay(stdscr, FALSE); // Return to default state
 
-    case 0510:
-        result = KEY_DL;
-        break;
-    case 0511:
-        result = KEY_IL;
-        break;
-    case 0512:
-        result = KEY_DC;
-        break;
-    case 0513:
-        result = KEY_IC;
-        break;
-    case 0514:
-        result = KEY_EIC;
-        break;
-    case 0515:
-        result = KEY_CLEAR;
-        break;
-    case 0516:
-        result = KEY_EOS;
-        break;
-    case 0517:
-        result = KEY_EOL;
-        break;
+        if (r == ERR) { //No key was waiting to be read. Escape is pressed (?)
+            r = KEY_CODE_YES;
+            ch = 27; //Escape key
+        }
 
-    case 0520:
-        result = KEY_SF;
-        break;
-    case 0521:
-        result = KEY_SR;
-        break;
-    case 0522:
-        result = KEY_NPAGE;
-        break;
-    case 0523:
-        result = KEY_PPAGE;
-        break;
-    case 0524:
-        result = KEY_STAB;
-        break;
-    case 0525:
-        result = KEY_CTAB;
-        break;
-    case 0526:
-        result = KEY_CATAB;
-        break;
-    case 0527:
-        result = KEY_ENTER;
-        break;
-
-    case 0530:
-        result = KEY_SRESET;
-        break;
-    case 0531:
-        result = KEY_RESET;
-        break;
-    case 0532:
-        result = KEY_PRINT;
-        break;
-    case 0533:
-        result = KEY_LL;
-        break;
-    case 0534:
-        result = KEY_A1;
-        break;
-    case 0535:
-        result = KEY_A3;
-        break;
-    case 0536:
-        result = KEY_B2;
-        break;
-    case 0537:
-        result = KEY_C1;
-        break;
-
-
-    case 0540:
-        result = KEY_C3;
-        break;
-    case 0541:
-        result = KEY_BTAB;
-        break;
-    case 0542:
-        result = KEY_BEG;
-        break;
-    case 0543:
-        result = KEY_CANCEL;
-        break;
-    case 0544:
-        result = KEY_CLOSE;
-        break;
-    case 0545:
-        result = KEY_COMMAND;
-        break;
-    case 0546:
-        result = KEY_COPY;
-        break;
-    case 0547:
-        result = KEY_CREATE;
-        break;
-
-    case 0550:
-        result = KEY_END;
-        break;
-    case 0551:
-        result = KEY_EXIT;
-        break;
-    case 0552:
-        result = KEY_FIND;
-        break;
-    case 0553:
-        result = KEY_HELP;
-        break;
-    case 0554:
-        result = KEY_MARK;
-        break;
-    case 0555:
-        result = KEY_MESSAGE;
-        break;
-    case 0556:
-        result = KEY_MOVE;
-        break;
-    case 0557:
-        result = KEY_NEXT;
-        break;
-
-    case 0560:
-        result = KEY_OPEN;
-        break;
-    case 0561:
-        result = KEY_OPTIONS;
-        break;
-    case 0562:
-        result = KEY_PREVIOUS;
-        break;
-    case 0563:
-        result = KEY_REDO;
-        break;
-    case 0564:
-        result = KEY_REFERENCE;
-        break;
-    case 0565:
-        result = KEY_REFRESH;
-        break;
-    case 0566:
-        result = KEY_REPLACE;
-        break;
-    case 0567:
-        result = KEY_RESTART;
-        break;
-
-    case 0570:
-        result = KEY_RESUME;
-        break;
-    case 0571:
-        result = KEY_SAVE;
-        break;
-    case 0572:
-        result = KEY_SBEG;
-        break;
-    case 0573:
-        result = KEY_SCANCEL;
-        break;
-    case 0574:
-        result = KEY_SCOMMAND;
-        break;
-    case 0575:
-        result = KEY_SCOPY;
-        break;
-    case 0576:
-        result = KEY_SCREATE;
-        break;
-    case 0577:
-        result = KEY_SDC;
-        break;
-
-    case 0600:
-        result = KEY_SDL;
-        break;
-    case 0601:
-        result = KEY_SELECT;
-        break;
-    case 0602:
-        result = KEY_SEND;
-        break;
-    case 0603:
-        result = KEY_SEOL;
-        break;
-    case 0604:
-        result = KEY_SEXIT;
-        break;
-    case 0605:
-        result = KEY_SFIND;
-        break;
-    case 0606:
-        result = KEY_SHELP;
-        break;
-    case 0607:
-        result = KEY_SHOME;
-        break;
-
-    case 0610:
-        result = KEY_SIC;
-        break;
-    case 0611:
-        result = KEY_SLEFT;
-        break;
-    case 0612:
-        result = KEY_SMESSAGE;
-        break;
-    case 0613:
-        result = KEY_SMOVE;
-        break;
-    case 0614:
-        result = KEY_SNEXT;
-        break;
-    case 0615:
-        result = KEY_SOPTIONS;
-        break;
-    case 0616:
-        result = KEY_SPREVIOUS;
-        break;
-    case 0617:
-        result = KEY_SPRINT;
-        break;
-
-    case 0620:
-        result = KEY_SREDO;
-        break;
-    case 0621:
-        result = KEY_SRIGHT;
-        break;
-    case 0622:
-        result = KEY_SREPLACE;
-        break;
-    case 0623:
-        result = KEY_SRSUME;
-        break;
-    case 0624:
-        result = KEY_SSAVE;
-        break;
-    case 0625:
-        result = KEY_SSUSPEND;
-        break;
-    case 0626:
-        result = KEY_SUNDO;
-        break;
-    case 0627:
-        result = KEY_SUSPEND;
-        break;
-    case 0630:
-        result = KEY_UNDO;
-        break;
-    case 777:
-        result = KEY_MAX;
-        break;
-    default:
-        result = KEY_MIN;
+        // Currently we're not returning that the meta key was pressed.
     }
 
-    return result;
-}
+    if (r != ERR && ch == backspaceKeyCode) {
+        return (jcurses_system_KeyDefs_CTYPE_FUNCTION << 24) | jcurses_system_KeyDefs_KEY_BACKSPACE;
+    }
 
+    switch (r) {
+        case OK:
+            if (ch < 256 && iswcntrl(ch)) {
+                r = jcurses_system_KeyDefs_CTYPE_CONTROL;
+            } else if (iswprint(ch)) {
+                r = jcurses_system_KeyDefs_CTYPE_PRINTABLE;
+            } else {
+                r = jcurses_system_KeyDefs_CTYPE_UNKNOWN;
+            }
+            break;
+        case KEY_CODE_YES:
+            if (mapFunctionKey(&ch) == 0) {
+                r = jcurses_system_KeyDefs_CTYPE_FUNCTION;
+            } else {
+                r = jcurses_system_KeyDefs_CTYPE_UNKNOWN;
+            }
+            break;
+        case ERR:
+            r = jcurses_system_KeyDefs_CTYPE_ERROR;
+            break;
+
+    }
+
+    return (r << 24) | ch;
+}
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_changeColors (JNIEnv *env, jclass clazz, jint x, jint y, jint width, jint height, jshort colorpair, jlong attr)
 {

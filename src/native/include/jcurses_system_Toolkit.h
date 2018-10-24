@@ -190,10 +190,10 @@ JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_initColorPair
 /*
  * Class:     jcurses_system_Toolkit
  * Method:    printString
- * Signature: ([BIIIISJ)V
+ * Signature: ([CIIIISJ)V
  */
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_printString
-  (JNIEnv *, jclass, jbyteArray, jint, jint, jint, jint, jshort, jlong);
+  (JNIEnv *, jclass, jcharArray, jint, jint, jint, jint, jshort, jlong);
 
 /*
  * Class:     jcurses_system_Toolkit

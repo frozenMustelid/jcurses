@@ -42,7 +42,6 @@ public class Toolkit {
      */ 
     public static final short UR_CORNER = 5;
 
-    
     private static long []__attributes = {0 ,0 ,0} ;
     private static short []__basicColors = {0 ,0 ,0 ,0 ,0 ,0 ,0 ,0} ;
     private static short [][]__colorpairs = new short [8][8];
@@ -99,7 +98,6 @@ public class Toolkit {
         fillBasicColors(__basicColors);
         fillAttributes(__attributes);
         fillColorPairs();
-        initEncoding();
         init();
     }
 
@@ -121,16 +119,6 @@ public class Toolkit {
         }
 
         clips.add(clipRect);
-    }
-
-    /**
-     * The method sets java encoding for string input and output operations
-     *
-     *
-     * @param  encoding  DOCUMENT ME!
-     */ 
-    public static void setEncoding(String encoding) {
-        __encoding = encoding;
     }
 
     /**
@@ -267,8 +255,6 @@ public class Toolkit {
      * @param  aX     the x coordinate of the top left corner of the clip to be painted
      * @param  aY     the y coordinate of the top left corner of the clip to be painted
      * @param  aPos   Position enum (UL,LL,UR,LR)
-     * @param  mPair  Color pair number
-     * @param  mAttr  Attribute
      */ 
     private static synchronized native void drawCorner(int aX, int aY,
              int aPos, short colorPairNumber, long attr);
@@ -577,23 +563,11 @@ public class Toolkit {
      */ 
     public static InputChar readCharacter() {
         synchronized (readSync) {
-            int mChar = readByte();
+            int data = readByte();
+            char ch = (char) (data & 0xffff);
+            int type = (data >> 24) & 0xff;
 
-            // handle escape sequences
-            if (mChar == 0x1b) {
-                mChar = readByte();
-                if (mChar == - 1) {
-                    mChar = 0x1b;
-                } else {
-                    mChar += 1000;
-                }
-            }
-
-            if (mChar == - 1) {
-                return null;
-            }
-
-            return new InputChar(mChar);
+            return new InputChar(ch, type);
         }
 
     }
@@ -902,16 +876,6 @@ public class Toolkit {
     private static synchronized native void initColorPair(short background,
              short foreground, short number);
 
-
-    /**
-     *  Description of the Method
-     */ 
-    private static void initEncoding() {
-        if (isWindows()) {
-            setEncoding("CP850");
-        }
-    }
-
     //  private static void loadLibrary()
     //  {
     /*
@@ -983,7 +947,7 @@ public class Toolkit {
      * @param  colorPairNumber  Description of the Parameter
      * @param  attr             Description of the Parameter
      */ 
-    private static synchronized native void printString(byte [] chars, int x,
+    private static synchronized native void printString(char[] chars, int x,
              int y, int width, int height, short colorPairNumber, long attr);
 
 
@@ -1000,26 +964,9 @@ public class Toolkit {
     private static void printStringNoClip(String aText, int aX, int aY,
              int aWidth, int aHeight, CharColor aColor) {
 
-        printString(encodeChars(aText), aX, aY, aWidth, aHeight,
+        printString(aText.toCharArray(), aX, aY, aWidth, aHeight,
                  aColor.getPairNo(), aColor.getAttribute());
 
-    }
-
-    /**
-     *  Description of the Method
-     *
-     * @param  aText  Description of the Parameter
-     * @return        Description of the Return Value
-     */ 
-    private static byte []encodeChars(String aText) {
-        try {
-            if (__encoding != null) {
-                return aText.getBytes(__encoding);
-            }
-        } catch (UnsupportedEncodingException e) {
-            __encoding = null;
-        }
-        return aText.getBytes();
     }
 
     /**

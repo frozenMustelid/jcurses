@@ -585,6 +585,7 @@ ac_unique_file="Makefile.in"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
 curses
+curses_h_param
 OBJEXT
 EXEEXT
 ac_ct_CC
@@ -1816,28 +1817,28 @@ fi
 javahome="${JAVA_HOME}"
 echo "JAVAHOME=${javahome}"
 for each in `ls ${javahome}/include` ;do
-  if  test -d ${javahome}/include/${each}  ;then
-     javaos=${each}
-  fi;
+if  test -d ${javahome}/include/${each}  ;then
+javaos=${each}
+fi;
 done;
 echo "JAVAOS=${javaos}"
 
 case $javaos in
 "linux")
-  libfilename="libjcurses.so"
-  ;;
+libfilename="libjcurses.so"
+;;
 "darwin")
-  libfilename="libjcurses.dylib"
-  ;;
+libfilename="libjcurses.dylib"
+;;
 
 "win32")
-  libfilename="jcurses.dll"
-  ;;
+libfilename="jcurses.dll"
+;;
 
 *)
-  echo "Unrecognized platform. Aborting"
-  exit 1
-  ;;
+echo "Unrecognized platform. Aborting"
+exit 1
+;;
 esac
 
 echo "LIBFILENAME=$libfilename"
@@ -2671,13 +2672,13 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for initscr in -lcurses" >&5
-$as_echo_n "checking for initscr in -lcurses... " >&6; }
-if ${ac_cv_lib_curses_initscr+:} false; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for get_wch in -lncursesw" >&5
+$as_echo_n "checking for get_wch in -lncursesw... " >&6; }
+if ${ac_cv_lib_ncursesw_get_wch+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lcurses  $LIBS"
+LIBS="-lncursesw  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -2687,33 +2688,35 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char initscr ();
+char get_wch ();
 int
 main ()
 {
-return initscr ();
+return get_wch ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_curses_initscr=yes
+  ac_cv_lib_ncursesw_get_wch=yes
 else
-  ac_cv_lib_curses_initscr=no
+  ac_cv_lib_ncursesw_get_wch=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_curses_initscr" >&5
-$as_echo "$ac_cv_lib_curses_initscr" >&6; }
-if test "x$ac_cv_lib_curses_initscr" = xyes; then :
-  curses=-lcurses
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ncursesw_get_wch" >&5
+$as_echo "$ac_cv_lib_ncursesw_get_wch" >&6; }
+if test "x$ac_cv_lib_ncursesw_get_wch" = xyes; then :
+  curses=-lncursesw
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for initscr in -lncurses" >&5
-$as_echo_n "checking for initscr in -lncurses... " >&6; }
-if ${ac_cv_lib_ncurses_initscr+:} false; then :
+
+if test -z "$curses"; then
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for get_wch in -lncurses" >&5
+$as_echo_n "checking for get_wch in -lncurses... " >&6; }
+if ${ac_cv_lib_ncurses_get_wch+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -2727,29 +2730,171 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char initscr ();
+char get_wch ();
 int
 main ()
 {
-return initscr ();
+return get_wch ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_ncurses_initscr=yes
+  ac_cv_lib_ncurses_get_wch=yes
 else
-  ac_cv_lib_ncurses_initscr=no
+  ac_cv_lib_ncurses_get_wch=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ncurses_initscr" >&5
-$as_echo "$ac_cv_lib_ncurses_initscr" >&6; }
-if test "x$ac_cv_lib_ncurses_initscr" = xyes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ncurses_get_wch" >&5
+$as_echo "$ac_cv_lib_ncurses_get_wch" >&6; }
+if test "x$ac_cv_lib_ncurses_get_wch" = xyes; then :
   curses=-lncurses
 fi
+
+fi
+
+if test -z "$curses"; then
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for get_wch in -lcurses" >&5
+$as_echo_n "checking for get_wch in -lcurses... " >&6; }
+if ${ac_cv_lib_curses_get_wch+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lcurses  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char get_wch ();
+int
+main ()
+{
+return get_wch ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_curses_get_wch=yes
+else
+  ac_cv_lib_curses_get_wch=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_curses_get_wch" >&5
+$as_echo "$ac_cv_lib_curses_get_wch" >&6; }
+if test "x$ac_cv_lib_curses_get_wch" = xyes; then :
+  curses=-lcurses
+fi
+
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if get_wch is defined on curses.h" >&5
+$as_echo_n "checking if get_wch is defined on curses.h... " >&6; }
+
+# Check for curses.h
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#define NCURSES_WIDECHAR 1
+#include <curses.h>
+int main() {
+wint_t ch;
+get_wch(&ch);
+return 0;
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  curses_h_param="-DHAVE_CURSES_H"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+if test -z "$curses_h_param"; then
+
+# Not found. Check for ncursesw/curses.h
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if get_wch is defined on ncursesw/curses.h" >&5
+$as_echo_n "checking if get_wch is defined on ncursesw/curses.h... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#define NCURSES_WIDECHAR 1
+#include <ncursesw/curses.h>
+int main() {
+wint_t ch;
+get_wch(&ch);
+return 0;
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  curses_h_param="-DHAVE_NCURSESW_NCURSES_H"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+if test -z "$curses_h_param"; then
+
+# Not found. Check for ncurses/curses.h
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if get_wch is defined on ncurses/curses.h" >&5
+$as_echo_n "checking if get_wch is defined on ncurses/curses.h... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#define NCURSES_WIDECHAR 1
+#include <ncurses/curses.h>
+int main() {
+wint_t ch;
+get_wch(&ch);
+return 0;
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  curses_h_param="-DHAVE_NCURSES_NCURSES_H"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+if test -z "$curses_h_param"; then
+# Not found. abort.
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+as_fn_error $? "Cannot determine a valid header file of curses to use." "$LINENO" 5
+else
+
+# Found in ncurses/curses.h
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+fi
+
+else
+
+# Found in ncursesw/curses.h
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+fi
+
+else
+
+# Found in curses.h
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+fi
+
 
 
 ac_config_files="$ac_config_files Makefile"

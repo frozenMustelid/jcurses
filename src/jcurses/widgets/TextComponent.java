@@ -332,43 +332,43 @@ public class TextComponent extends Widget
     int bFirstLine = _firstLine;
     char bChar = getCharacterAtCursorPosition();
 
-    if ( ch.getCode() == InputChar.KEY_RIGHT )
+    if ( ch.equals(InputChar.Function.KEY_RIGHT) )
     {
       setCursorLocation(_cursPosX + 1, _cursPosY);
       redrawAfterCursorMove(bCursorPosX, bCursorPosY, bFirstChar, bFirstLine, bChar);
       return true;
     }
-    else if ( ch.getCode() == InputChar.KEY_LEFT )
+    else if ( ch.equals(InputChar.Function.KEY_LEFT) )
     {
       setCursorLocation(_cursPosX - 1, _cursPosY);
       redrawAfterCursorMove(bCursorPosX, bCursorPosY, bFirstChar, bFirstLine, bChar);
       return true;
     }
-    else if ( ch.getCode() == InputChar.KEY_UP )
+    else if ( ch.equals(InputChar.Function.KEY_UP) )
     {
       setCursorLocation(_cursPosX, _cursPosY - 1);
       redrawAfterCursorMove(bCursorPosX, bCursorPosY, bFirstChar, bFirstLine, bChar);
       return true;
     }
-    else if ( ch.getCode() == InputChar.KEY_DOWN )
+    else if ( ch.equals(InputChar.Function.KEY_DOWN) )
     {
       setCursorLocation(_cursPosX, _cursPosY + 1);
       redrawAfterCursorMove(bCursorPosX, bCursorPosY, bFirstChar, bFirstLine, bChar);
       return true;
     }
-    else if ( ch.getCode() == InputChar.KEY_HOME )
+    else if ( ch.equals(InputChar.Function.KEY_HOME) )
     {
       setCursorLocation(_cursPosX, 0);
       redrawAfterCursorMove(bCursorPosX, bCursorPosY, bFirstChar, bFirstLine, bChar);
       return true;
     }
-    else if ( ch.getCode() == InputChar.KEY_END )
+    else if ( ch.equals(InputChar.Function.KEY_END) )
     {
       setCursorLocation(_cursPosX, getTextHeight() - 1);
       redrawAfterCursorMove(bCursorPosX, bCursorPosY, bFirstChar, bFirstLine, bChar);
       return true;
     }
-    else if ( ch.getCode() == InputChar.KEY_NPAGE )
+    else if ( ch.equals(InputChar.Function.KEY_PGDOWN) )
     {
       int newYPos = 0;
 
@@ -381,7 +381,7 @@ public class TextComponent extends Widget
       redrawAfterCursorMove(bCursorPosX, bCursorPosY, bFirstChar, bFirstLine, bChar);
       return true;
     }
-    else if ( ch.getCode() == InputChar.KEY_PPAGE )
+    else if ( ch.equals( InputChar.Function.KEY_PGUP) )
     {
       int newYPos = 0;
 
@@ -393,7 +393,7 @@ public class TextComponent extends Widget
       setCursorLocation(_cursPosX, newYPos, true);
       redrawAfterCursorMove(bCursorPosX, bCursorPosY, bFirstChar, bFirstLine, bChar);
     }
-    else if ( ch.getCode() == InputChar.KEY_BACKSPACE || ch.getCode() == '\b' || ch.getCode() == 127 )
+    else if ( ch.equals(InputChar.Function.KEY_BACKSPACE) )
     {
       deleteCharBeforeCursorLocation();
 
@@ -420,9 +420,9 @@ public class TextComponent extends Widget
 
       return true;
     }
-    else if ( ! ch.isSpecialCode() )
+    else if (ch.getType() == InputChar.InputType.PRINTABLE)
     {
-      char c = ch.getCharacter();
+      char c = ch.getCode();
       insertCharAtCursorLocation(c);
 
       if ( c == '\n' )

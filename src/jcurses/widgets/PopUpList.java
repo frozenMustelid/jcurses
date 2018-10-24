@@ -19,8 +19,8 @@ import java.util.Vector;
  */
 public class PopUpList extends Widget
 {
+  private static final InputChar INPUT_CHANGE_VALUE = InputChar.Control.ENTER;
   Vector                              _items            = new Vector();
-  private static InputChar            __changeValueChar = new InputChar('\n');
   private ValueChangedListenerManager _listenerManager  = new ValueChangedListenerManager();
   private int                         _selectedIndex    = - 1;
 
@@ -210,7 +210,7 @@ public class PopUpList extends Widget
 
   protected boolean handleInput(InputChar ch)
   {
-    if ( ch.equals(__changeValueChar) )
+    if ( ch.equals(INPUT_CHANGE_VALUE) )
     {
       if ( _items.size() > 1 )
       {
