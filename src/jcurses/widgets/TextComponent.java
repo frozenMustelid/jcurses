@@ -420,22 +420,18 @@ public class TextComponent extends Widget
 
       return true;
     }
-    else if (ch.getType() == InputChar.InputType.PRINTABLE)
+    else if (ch.equals(InputChar.Control.ENTER)) {
+      insertCharAtCursorLocation('\n');
+      setCursorLocation(0, _cursPosY + 1);
+      redrawAfterTextChange(bCursorPosX, bCursorPosY, bFirstChar, bFirstLine);
+    } else if (ch.getType() == InputChar.InputType.PRINTABLE)
     {
       char c = ch.getCode();
       insertCharAtCursorLocation(c);
 
-      if ( c == '\n' )
-      {
-        setCursorLocation(0, _cursPosY + 1);
-        redrawAfterTextChange(bCursorPosX, bCursorPosY, bFirstChar, bFirstLine);
-      }
-      else
-      {
-        setCursorLocation(_cursPosX + 1, _cursPosY);
-        redrawAfterCursorMove(bCursorPosX, bCursorPosY, bFirstChar, bFirstLine, bChar); //Should act like we're moving the cursor, so the rest of the lines are updated too
-        redrawLine(_cursPosY);
-      }
+      setCursorLocation(_cursPosX + 1, _cursPosY);
+      redrawAfterCursorMove(bCursorPosX, bCursorPosY, bFirstChar, bFirstLine, bChar); //Should act like we're moving the cursor, so the rest of the lines are updated too
+      redrawLine(_cursPosY);
 
       return true;
     }
