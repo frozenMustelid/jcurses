@@ -11,12 +11,12 @@ import java.io.FileFilter;
  */
 public interface JCursesFileFilterFactory {
 
-	/**
-	 *  Generate a file filter from a string.
-	 *
-	 * @param  filterString  string showing acceptable file patterns
-	 * @return               Filter object modelled on filterString
-	 */
+    /**
+     *  Generate a file filter from a string.
+     *
+     * @param  filterString  string showing acceptable file patterns
+     * @return               Filter object modelled on filterString
+     */
     FileFilter generateFileFilter(String filterString);
 
 }

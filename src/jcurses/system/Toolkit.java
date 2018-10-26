@@ -19,27 +19,27 @@ import jcurses.util.TextUtils;
 public class Toolkit {
     /**
      *  Effectively an enum
-     */     
+     */
     public static final int VERTICAL = 0;
     /**
      *  Effectively an enum
-     */     
+     */
     public static final int HORIZONTAL = 1;
     /**
      *  Effectively an enum
-     */ 
+     */
     public static final short LL_CORNER = 2;
     /**
      *  Effectively an enum
-     */ 
+     */
     public static final short LR_CORNER = 3;
     /**
      *  Effectively an enum
-     */ 
+     */
     public static final short UL_CORNER = 4;
     /**
      *  Effectively an enum
-     */ 
+     */
     public static final short UR_CORNER = 5;
 
     private static long []__attributes = {0 ,0 ,0} ;
@@ -108,9 +108,9 @@ public class Toolkit {
      *
      *
      * @param  clipRect  clip rectangle to be set
-     */ 
+     */
     @SuppressWarnings("unchecked")
-	public static void setClipRectangle(Rectangle clipRect) {
+    public static void setClipRectangle(Rectangle clipRect) {
         ArrayList clips = (ArrayList) __clips.get(Thread.currentThread());
 
         if (clips == null) {
@@ -126,7 +126,7 @@ public class Toolkit {
      *
      *
      * @return    the java encoding used by sring input and output operations
-     */ 
+     */
     public static String getEncoding() {
         return __encoding;
     }
@@ -136,7 +136,7 @@ public class Toolkit {
      *
      *
      * @return    the screen height
-     */ 
+     */
     public static synchronized native int getScreenHeight();
 
     /**
@@ -144,12 +144,12 @@ public class Toolkit {
      *
      *
      * @return    the screen height
-     */ 
+     */
     public static synchronized native int getScreenWidth();
 
     /**
      * The method to make an audio alert. Works only with terminals, that support 'beeps', under windows currenty does nothing.
-     */ 
+     */
     public static synchronized native void beep();
 
     /**
@@ -158,7 +158,7 @@ public class Toolkit {
      *
      * @param  aRect   rectangle, whose colors are to be changed
      * @param  aColor  new colors
-     */ 
+     */
     public static void changeColors(Rectangle aRect, CharColor aColor) {
         Rectangle clipRect = getCurrentClipRectangle();
 
@@ -168,7 +168,7 @@ public class Toolkit {
 
         if (! aRect.isEmpty()) {
             changeColors(aRect.getX(), aRect.getY(), aRect.getWidth(),
-                     aRect.getHeight(), aColor.getPairNo(), aColor.getAttribute());
+                    aRect.getHeight(), aColor.getPairNo(), aColor.getAttribute());
 
         }
     }
@@ -178,7 +178,7 @@ public class Toolkit {
      *
      *
      * @param  color  color the color to fill the screen, only background part is used
-     */ 
+     */
     public static void clearScreen(CharColor color) {
         clearScreen(color.getPairNo(), color.getAttribute());
     }
@@ -189,10 +189,10 @@ public class Toolkit {
      *
      * @param  rect   bounds of the border to be painted
      * @param  color  color attributes of the border
-     */ 
+     */
     public static void drawBorder(Rectangle rect, CharColor color) {
         drawBorder(rect.getX(), rect.getY(), rect.getWidth(),
-                 rect.getHeight(), color);
+                rect.getHeight(), color);
 
     }
 
@@ -208,9 +208,9 @@ public class Toolkit {
      * @param  aWidth   the width of the border to be painted
      * @param  aHeight  the height of the border to be painted
      * @param  aColor   color attributes of the border
-     */ 
+     */
     public static void drawBorder(int aX, int aY, int aWidth, int aHeight,
-             CharColor aColor) {
+                                  CharColor aColor) {
 
 
         short mPair = aColor.getPairNo();
@@ -224,7 +224,7 @@ public class Toolkit {
         drawCornerClip(aX, aY + aHeight - 1, LL_CORNER, mPair, mAttr);
         drawHLineClip(aX + 1, aY + aHeight - 1, aX + aWidth - 1, aColor);
         drawCornerClip(aX + aWidth - 1, aY + aHeight - 1, LR_CORNER, mPair,
-                 mAttr);
+                mAttr);
 
 
     }
@@ -237,13 +237,13 @@ public class Toolkit {
      * @param  aPos   Position enum (UL,LL,UR,LR)
      * @param  mPair  Color pair number
      * @param  mAttr  Attribute
-     */ 
+     */
     private static void drawCornerClip(int aX, int aY, int aPos, short mPair,
-             long mAttr) {
+                                       long mAttr) {
 
         Rectangle mClip = getCurrentClipRectangle();
         if (mClip == null || (isBetween(aX, mClip.getLeft(),
-                 mClip.getRight()) && isBetween(aY, mClip.getTop(), mClip.getBottom()))) {
+                mClip.getRight()) && isBetween(aY, mClip.getTop(), mClip.getBottom()))) {
 
             drawCorner(aX, aY, aPos, mPair, mAttr);
         }
@@ -255,9 +255,9 @@ public class Toolkit {
      * @param  aX     the x coordinate of the top left corner of the clip to be painted
      * @param  aY     the y coordinate of the top left corner of the clip to be painted
      * @param  aPos   Position enum (UL,LL,UR,LR)
-     */ 
+     */
     private static synchronized native void drawCorner(int aX, int aY,
-             int aPos, short colorPairNumber, long attr);
+                                                       int aPos, short colorPairNumber, long attr);
 
 
     /**
@@ -268,9 +268,9 @@ public class Toolkit {
      * @param  startY  the y coordinate of the start point
      * @param  endX    the x coordinate of the end point
      * @param  color   DOCUMENT ME!
-     */ 
+     */
     public static void drawHLineClip(int startX, int startY, int endX,
-             CharColor color) {
+                                     CharColor color) {
 
         Rectangle mClip = getCurrentClipRectangle();
 
@@ -280,10 +280,10 @@ public class Toolkit {
         }
 
         if (mClip == null || (isBetween(startY, mClip.getTop(),
-                 mClip.getBottom()) && startX <= mClip.getRight() && endX >= mClip.getLeft())) {
+                mClip.getBottom()) && startX <= mClip.getRight() && endX >= mClip.getLeft())) {
 
             drawHorizontalLine(startX, startY, endX, color.getPairNo(),
-                     color.getAttribute());
+                    color.getAttribute());
 
         }
     }
@@ -296,9 +296,9 @@ public class Toolkit {
      * @param  startY  the y coordinate of the start point
      * @param  endX    the x coordinate of the end point
      * @param  color   DOCUMENT ME!
-     */ 
+     */
     public static void drawHorizontalThickLine(int startX, int startY,
-             int endX, CharColor color) {
+                                               int endX, CharColor color) {
 
         Rectangle mClip = getCurrentClipRectangle();
 
@@ -308,10 +308,10 @@ public class Toolkit {
         }
 
         if (mClip == null || (isBetween(startY, mClip.getTop(),
-                 mClip.getBottom()) && startX <= mClip.getRight() && endX >= mClip.getLeft())) {
+                mClip.getBottom()) && startX <= mClip.getRight() && endX >= mClip.getLeft())) {
 
             drawHorizontalThickLine(startX, startY, endX, color.getPairNo(),
-                     color.getAttribute());
+                    color.getAttribute());
 
         }
     }
@@ -322,10 +322,10 @@ public class Toolkit {
      *
      * @param  aRect   rectangle ( that is, bounds of rectangle) to be painted
      * @param  aColor  color to fill the rectangle, only background part is used
-     */ 
+     */
     public static void drawRectangle(Rectangle aRect, CharColor aColor) {
         drawRectangle(aRect.getX(), aRect.getY(), aRect.getWidth(),
-                 aRect.getHeight(), aColor);
+                aRect.getHeight(), aColor);
 
     }
 
@@ -337,9 +337,9 @@ public class Toolkit {
      * @param  aWide   the width of the rectangle to be painted
      * @param  aHigh   the height of the rectangle to be painted
      * @param  aColor  color to fill the rectangle, only background part is used
-     */ 
+     */
     public static void drawRectangle(int aX, int aY, int aWide, int aHigh,
-             CharColor aColor) {
+                                     CharColor aColor) {
 
         drawRectangle(aX, aY, aWide, aHigh, getCurrentClipRectangle(), aColor);
     }
@@ -354,13 +354,13 @@ public class Toolkit {
      * @param  aHigh   the height of the rectangle to be painted
      * @param  aClip   clipping rect
      * @param  aColor  color to fill the rectangle, only background part is used
-     */ 
+     */
     public static void drawRectangle(int aX, int aY, int aWide, int aHigh,
-             Rectangle aClip, CharColor aColor) {
+                                     Rectangle aClip, CharColor aColor) {
 
         if (aClip == null) {
             drawRectangle(aX, aY, aWide, aHigh, aColor.getPairNo(),
-                     aColor.getAttribute());
+                    aColor.getAttribute());
 
         } else {
             int mX = Math.max(aX, aClip.getLeft());
@@ -370,7 +370,7 @@ public class Toolkit {
 
             if (mWide > 0 && mHigh > 0) {
                 drawRectangle(mX, mY, mWide, mHigh, aColor.getPairNo(),
-                         aColor.getAttribute());
+                        aColor.getAttribute());
 
             }
         }
@@ -384,9 +384,9 @@ public class Toolkit {
      * @param  startY  the y coordinate of the start point
      * @param  endY    the y coordinate of the end point
      * @param  color   color to draw line
-     */ 
+     */
     public static void drawVLineClip(int startX, int startY, int endY,
-             CharColor color) {
+                                     CharColor color) {
 
         Rectangle mClip = getCurrentClipRectangle();
 
@@ -396,10 +396,10 @@ public class Toolkit {
         }
 
         if (mClip == null || (isBetween(startX, mClip.getLeft(),
-                 mClip.getRight()) && startY <= mClip.getBottom() && endY >= mClip.getTop())) {
+                mClip.getRight()) && startY <= mClip.getBottom() && endY >= mClip.getTop())) {
 
             drawVerticalLine(startX, startY, endY, color.getPairNo(),
-                     color.getAttribute());
+                    color.getAttribute());
 
         }
     }
@@ -412,9 +412,9 @@ public class Toolkit {
      * @param  startY  the y coordinate of the start point
      * @param  endY    the y coordinate of the end point
      * @param  color   color to draw line
-     */ 
+     */
     public static void drawVerticalThickLine(int startX, int startY, int endY,
-             CharColor color) {
+                                             CharColor color) {
 
         Rectangle mClip = getCurrentClipRectangle();
 
@@ -424,10 +424,10 @@ public class Toolkit {
         }
 
         if (mClip == null || (isBetween(startX, mClip.getLeft(),
-                 mClip.getRight()) && startY <= mClip.getBottom() && endY >= mClip.getTop())) {
+                mClip.getRight()) && startY <= mClip.getBottom() && endY >= mClip.getTop())) {
 
             drawVerticalThickLine(startX, startY, endY, color.getPairNo(),
-                     color.getAttribute());
+                    color.getAttribute());
 
         }
     }
@@ -435,7 +435,7 @@ public class Toolkit {
     /**
      * The method ends a new painting action, containing possible many painting operations The call of this method must already follow a call of
      * <code>startPainting</code>
-     */ 
+     */
     public static synchronized native void endPainting();
 
     /**
@@ -443,14 +443,14 @@ public class Toolkit {
      *
      *
      * @return    <code>true</code> if the terminal can do color painting, <code>false</code> otherwise.
-     */ 
+     */
     public static boolean hasColors() {
         return (hasColorsAsInteger() != 0);
     }
 
     /**
      * The method initializes the jcurses library, must be called only one time before all painting and input operations.
-     */ 
+     */
     public static synchronized native void init();
 
     /**
@@ -460,12 +460,12 @@ public class Toolkit {
      * @param  aText     string to be printed
      * @param  aTextBox  the rectangle, within which the string must lie. If the string doesn't fit within the rectangle it will be broken.
      * @param  aColor    attributes of the string
-     */ 
+     */
     public static void printString(String aText, Rectangle aTextBox,
-             CharColor aColor) {
+                                   CharColor aColor) {
 
         printString(aText, aTextBox.getLeft(), aTextBox.getTop(),
-                 aTextBox.getWidth(), aTextBox.getHeight(), aColor);
+                aTextBox.getWidth(), aTextBox.getHeight(), aColor);
 
     }
 
@@ -479,12 +479,12 @@ public class Toolkit {
      * @param  aWide   the width of bounds rectangle
      * @param  aHigh   the width of bounds rectangle
      * @param  aColor  color attributes of the string
-     */ 
+     */
     public static void printString(String aText, int aX, int aY, int aWide,
-             int aHigh, CharColor aColor) {
+                                   int aHigh, CharColor aColor) {
 
         printString(aText, aX, aY, aWide, aHigh, getCurrentClipRectangle(),
-                 aColor);
+                aColor);
 
     }
 
@@ -503,26 +503,26 @@ public class Toolkit {
      * @param  aHigh   the width of bounds rectangle
      * @param  aClip   clipping rectangle
      * @param  aColor  color attributes of the string
-     */ 
+     */
     public static void printString(String aText, int aX, int aY, int aWide,
-             int aHigh, Rectangle aClip, CharColor aColor) {
+                                   int aHigh, Rectangle aClip, CharColor aColor) {
 
         int mX = (aClip == null) ? aX : Math.max(aX, aClip.getLeft());
         int mY = (aClip == null) ? aY : Math.max(aY, aClip.getTop());
 
-		List mLines = TextUtils.breakLines(aText, aWide);
+        List mLines = TextUtils.breakLines(aText, aWide);
         int mFirstLine = mY - aY;
         // clip this many lines at the top
- 
+
         int mWide = (aClip == null) ? aWide : Math.min(aWide,
-                 aClip.getRight() - mX + 1);
+                aClip.getRight() - mX + 1);
 
         int mHigh = (aClip == null) ? aHigh : Math.min(aHigh,
-                 aClip.getBottom() - mY + 1);
+                aClip.getBottom() - mY + 1);
 
         mHigh = Math.min(mHigh, mLines.size() - mFirstLine);
         // adjust height of box to max number of lines
- 
+
         if (mWide > 0 && mHigh > 0) {
             int mOffset = mX - aX;
             // clip this many leftmost characters per line
@@ -530,7 +530,7 @@ public class Toolkit {
                 String mLine = (String) mLines.get(mIdx + mFirstLine);
                 if (mLine.length() > mOffset) {
                     printStringNoClip(mLine.substring(mOffset), mX, mY + mIdx,
-                             mWide, 1, aColor);
+                            mWide, 1, aColor);
 
                 }
             }
@@ -545,14 +545,14 @@ public class Toolkit {
      * @param  x      the x coordinate of the string start point
      * @param  y      the y coordinate of the string start point
      * @param  color  color attributes of the string
-     */ 
+     */
     public static void printString(String text, int x, int y, CharColor color) {
         printString(text, x, y, text.length(), 1, color);
     }
 
     /**
      * Target for character read synchronizing
-     */ 
+     */
     private static Integer readSync = new Integer(0);
 
     /**
@@ -560,7 +560,7 @@ public class Toolkit {
      *
      *
      * @return    the next read code
-     */ 
+     */
     public static InputChar readCharacter() {
         synchronized (readSync) {
             int data = readByte();
@@ -574,18 +574,18 @@ public class Toolkit {
 
     /**
      * The method shuts down the jcurses library and recovers the terminal to the state before jcurses application start.
-     */ 
+     */
     public static synchronized native void shutdown();
 
     /**
      * The method starts a new painting action, containing possible many painting operations After a call of this method endPainting must be already called, to
      * refersh the screen.
-     */ 
+     */
     public static synchronized native void startPainting();
 
     /**
      * Removes the previously set clip rectangle.
-     */ 
+     */
     public static void unsetClipRectangle() {
         ArrayList clips = (ArrayList) __clips.get(Thread.currentThread());
 
@@ -606,7 +606,7 @@ public class Toolkit {
      *  Gets the basicColors attribute of the Toolkit class
      *
      * @return    The basicColors value
-     */ 
+     */
     static short []getBasicColors() {
         return __basicColors;
     }
@@ -616,7 +616,7 @@ public class Toolkit {
      *
      * @param  code  Description of the Parameter
      * @return       The specialKeyCode value
-     */ 
+     */
     static synchronized native int getSpecialKeyCode(int code);
 
     /**
@@ -624,21 +624,21 @@ public class Toolkit {
      *
      * @param  aColor  Description of the Parameter
      * @return         The colorPairNo value
-     */ 
+     */
     static short getColorPairNo(CharColor aColor) {
         short number = __colorpairs[aColor.getBackground()][aColor.getForeground()];
         if (number == - 1) {
             number = ++__maxColorPairNumber;
             __colorpairs[aColor.getBackground()][aColor.getForeground()] = number;
             initColorPair(mapBasicColor(aColor.getBackground()),
-                     mapBasicColor(aColor.getForeground()), number);
+                    mapBasicColor(aColor.getForeground()), number);
 
             //System.err.println("NEW COLOR: [" + aColor.toString() + "] = [" + number + "] {" + mapBasicColor(aColor.getBackground()) + "} {" +
             // mapBasicColor(aColor.getForeground()) + "}");
         }
 
         //System.err.println("USE COLOR: [" + aColor.toString() + "] = [" + number + "]");
- 
+
         return number;
     }
 
@@ -647,7 +647,7 @@ public class Toolkit {
      *
      * @param  aColor  Description of the Parameter
      * @return         Description of the Return Value
-     */ 
+     */
     static short mapBasicColor(short aColor) {
         return __basicColors[aColor];
     }
@@ -657,7 +657,7 @@ public class Toolkit {
      *
      * @param  aAttr  Description of the Parameter
      * @return        Description of the Return Value
-     */ 
+     */
     static long mapAttribute(short aAttr) {
         return __attributes[aAttr];
     }
@@ -666,7 +666,7 @@ public class Toolkit {
      *  Gets the currentClipRectangle attribute of the Toolkit class
      *
      * @return    The currentClipRectangle value
-     */ 
+     */
     private static Rectangle getCurrentClipRectangle() {
         ArrayList clips = (ArrayList) __clips.get(Thread.currentThread());
 
@@ -692,7 +692,7 @@ public class Toolkit {
      *  Gets the windows attribute of the Toolkit class
      *
      * @return    The windows value
-     */ 
+     */
     private static boolean isWindows() {
         return (java.io.File.separatorChar == '\\');
     }
@@ -704,7 +704,7 @@ public class Toolkit {
      * @param  aStart  Description of the Parameter
      * @param  aEnd    Description of the Parameter
      * @return         The between value
-     */ 
+     */
     private static boolean isBetween(int aValue, int aStart, int aEnd) {
         if (aStart > aEnd) {
             int aTmp = aStart;
@@ -723,9 +723,9 @@ public class Toolkit {
      * @param  height           Description of the Parameter
      * @param  colorPairNumber  Description of the Parameter
      * @param  attr             Description of the Parameter
-     */ 
+     */
     private static synchronized native void changeColors(int x, int y,
-             int width, int height, short colorPairNumber, long attr);
+                                                         int width, int height, short colorPairNumber, long attr);
 
 
     /**
@@ -733,13 +733,13 @@ public class Toolkit {
      *
      * @param  colorPairNumber  Description of the Parameter
      * @param  attributes       Description of the Parameter
-     */ 
+     */
     private static synchronized native void clearScreen(short colorPairNumber,
-             long attributes);
+                                                        long attributes);
 
 
     //private static native int computeChtype(short number);
- 
+
     /**
      *  Description of the Method
      *
@@ -748,9 +748,9 @@ public class Toolkit {
      * @param  endY             Description of the Parameter
      * @param  colorPairNumber  Description of the Parameter
      * @param  attr             Description of the Parameter
-     */ 
+     */
     private static synchronized native void drawHorizontalLine(int startX,
-             int startY, int endY, short colorPairNumber, long attr);
+                                                               int startY, int endY, short colorPairNumber, long attr);
 
 
     /**
@@ -761,9 +761,9 @@ public class Toolkit {
      * @param  endX             Description of the Parameter
      * @param  colorPairNumber  Description of the Parameter
      * @param  attr             Description of the Parameter
-     */ 
+     */
     private static synchronized native void drawHorizontalThickLine(int startX,
-             int startY, int endX, short colorPairNumber, long attr);
+                                                                    int startY, int endX, short colorPairNumber, long attr);
 
 
     /**
@@ -775,9 +775,9 @@ public class Toolkit {
      * @param  height           Description of the Parameter
      * @param  colorPairNumber  Description of the Parameter
      * @param  attribute        Description of the Parameter
-     */ 
+     */
     private static synchronized native void drawRectangle(int x, int y,
-             int width, int height, short colorPairNumber, long attribute);
+                                                          int width, int height, short colorPairNumber, long attribute);
 
 
     /**
@@ -788,9 +788,9 @@ public class Toolkit {
      * @param  endX             Description of the Parameter
      * @param  colorPairNumber  Description of the Parameter
      * @param  attr             Description of the Parameter
-     */ 
+     */
     private static synchronized native void drawVerticalLine(int startX,
-             int startY, int endX, short colorPairNumber, long attr);
+                                                             int startY, int endX, short colorPairNumber, long attr);
 
 
     /**
@@ -801,28 +801,28 @@ public class Toolkit {
      * @param  endY             Description of the Parameter
      * @param  colorPairNumber  Description of the Parameter
      * @param  attr             Description of the Parameter
-     */ 
+     */
     private static synchronized native void drawVerticalThickLine(int startX,
-             int startY, int endY, short colorPairNumber, long attr);
+                                                                  int startY, int endY, short colorPairNumber, long attr);
 
 
     /**
      *  Description of the Method
      *
      * @param  attributes  Description of the Parameter
-     */ 
+     */
     private static synchronized native void fillAttributes(long [] attributes);
 
     /**
      *  Description of the Method
      *
      * @param  basicColors  Description of the Parameter
-     */ 
+     */
     private static synchronized native void fillBasicColors(short [] basicColors);
 
     /**
      *  Description of the Method
-     */ 
+     */
     private static void fillColorPairs() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -835,7 +835,7 @@ public class Toolkit {
      *  Description of the Method
      *
      * @return    Description of the Return Value
-     */ 
+     */
     private static synchronized native int hasColorsAsInteger();
 
     /**
@@ -845,12 +845,12 @@ public class Toolkit {
      * @param  aRed     Description of the Parameter
      * @param  aGreen   Description of the Parameter
      * @param  aBlue    Description of the Parameter
-     */ 
+     */
     public static void adjustBaseColor(short aNumber, int aRed, int aGreen,
-             int aBlue) {
+                                       int aBlue) {
 
         adjustColor(__basicColors[aNumber], (short) aRed, (short) aGreen,
-                 (short) aBlue);
+                (short) aBlue);
 
     }
 
@@ -861,9 +861,9 @@ public class Toolkit {
      * @param  aRed     Description of the Parameter
      * @param  aGreen   Description of the Parameter
      * @param  aBlue    Description of the Parameter
-     */ 
+     */
     private static synchronized native void adjustColor(short aNumber,
-             short aRed, short aGreen, short aBlue);
+                                                        short aRed, short aGreen, short aBlue);
 
 
     /**
@@ -872,16 +872,16 @@ public class Toolkit {
      * @param  background  Description of the Parameter
      * @param  foreground  Description of the Parameter
      * @param  number      Description of the Parameter
-     */ 
+     */
     private static synchronized native void initColorPair(short background,
-             short foreground, short number);
+                                                          short foreground, short number);
 
     //  private static void loadLibrary()
     //  {
     /*
      *  System.out.println(System.mapLibraryName(LIBRARY_NAME));
      *  System.out.println(System.getProperty("java.library.path"));
-     */ 
+     */
     // System.loadLibrary(LIBRARY_NAME);
     /*
      *  String pathSeparator = System.getProperty("path.separator");
@@ -933,7 +933,7 @@ public class Toolkit {
      *  }
      *  }
      *  throw new RuntimeException("Native Library " + LIBRARY_NAME + " (" + mPlatformName + ") could not be found in the library path or class path.");
-     */ 
+     */
     //  }
 
     /**
@@ -946,9 +946,9 @@ public class Toolkit {
      * @param  height           Description of the Parameter
      * @param  colorPairNumber  Description of the Parameter
      * @param  attr             Description of the Parameter
-     */ 
+     */
     private static synchronized native void printString(char[] chars, int x,
-             int y, int width, int height, short colorPairNumber, long attr);
+                                                        int y, int width, int height, short colorPairNumber, long attr);
 
 
     /**
@@ -960,12 +960,12 @@ public class Toolkit {
      * @param  aWidth   Description of the Parameter
      * @param  aHeight  Description of the Parameter
      * @param  aColor   Description of the Parameter
-     */ 
+     */
     private static void printStringNoClip(String aText, int aX, int aY,
-             int aWidth, int aHeight, CharColor aColor) {
+                                          int aWidth, int aHeight, CharColor aColor) {
 
         printString(aText.toCharArray(), aX, aY, aWidth, aHeight,
-                 aColor.getPairNo(), aColor.getAttribute());
+                aColor.getPairNo(), aColor.getAttribute());
 
     }
 
@@ -973,14 +973,14 @@ public class Toolkit {
      *  Description of the Method
      *
      * @return    Description of the Return Value
-     */ 
+     */
     private static native int readByte();
 
     /**
      *  Gets the screen attribute of the Toolkit class
      *
      * @return    The screen value
-     */ 
+     */
     public static Rectangle getScreen() {
         return new Rectangle(0, 0, getScreenWidth(), getScreenHeight());
     }

@@ -8,118 +8,118 @@ import jcurses.util.Rectangle;
 
 /**
  * This class implements a input text field to edie a one line text.
- *  
+ *
  */
 public class TextField extends TextComponent
 {
-  private String _delimiter = null;
+    private String _delimiter = null;
 
-  /**
-   * The constructor
-   * 
-   * @param width the preferred width, if -1, there is no preferred size.
-   * @param text initial text, if null, the field is empty
-   */
-  public TextField(int width, String text)
-  {
-    super(width, 1, text);
-  }
-
-  /**
-   * The constructor
-   * 
-   * @param width the preferred width, if -1, there is no preferred size.
-   */
-  public TextField(int width)
-  {
-    super(width, 1);
-  }
-
-  public TextField()
-  {
-    this(- 1);
-  }
-
-  public void setDelimiter(char c)
-  {
-    char[] chars = new char[1];
-    chars[0] = c;
-    _delimiter = new String(chars);
-  }
-
-  /**
-   * @deprecated Use setBorderColors()
-   */
-  public void setDelimiterColors(CharColor aColor)
-  {
-    setBorderColors(aColor);
-  }
-
-  /**
-   * @deprecated Use getBorderColors()
-   */
-  public CharColor getDelimiterColors()
-  {
-    return getBorderColors();
-  }
-
-  /**
-   * @deprecated Use getBorderDefaultColors()
-   */
-  public CharColor getDelimiterDefaultColors()
-  {
-    return getBorderDefaultColors();
-  }
-
-  public void setText(String text)
-  {
-    if ( text == null )
-      super.setText(text);
-    else
+    /**
+     * The constructor
+     *
+     * @param width the preferred width, if -1, there is no preferred size.
+     * @param text initial text, if null, the field is empty
+     */
+    public TextField(int width, String text)
     {
-      if ( text.indexOf("\n") != - 1 )
-        super.setText(text.substring(0, text.indexOf("\n")));
-      else
-        super.setText(text);
+        super(width, 1, text);
     }
-  }
 
-  protected static String getDefaultDelimiter()
-  {
-    return "|";
-  }
+    /**
+     * The constructor
+     *
+     * @param width the preferred width, if -1, there is no preferred size.
+     */
+    public TextField(int width)
+    {
+        super(width, 1);
+    }
 
-  protected Rectangle getTextRectangle()
-  {
-    Rectangle result = (Rectangle)getSize().clone();
-    result.setLocation(getAbsoluteX() + 1, getAbsoluteY());
-    result.setWidth(result.getWidth() - 2);
+    public TextField()
+    {
+        this(- 1);
+    }
 
-    return result;
-  }
+    public void setDelimiter(char c)
+    {
+        char[] chars = new char[1];
+        chars[0] = c;
+        _delimiter = new String(chars);
+    }
 
-  protected void doPaint()
-  {
-    super.doPaint();
+    /**
+     * @deprecated Use setBorderColors()
+     */
+    public void setDelimiterColors(CharColor aColor)
+    {
+        setBorderColors(aColor);
+    }
 
-    // Begrenzer malen
-    Toolkit.printString(getDelimiterString(), getAbsoluteX(), getAbsoluteY(), getBorderColors());
-    Toolkit.printString(getDelimiterString(), ( getAbsoluteX() + getSize().getWidth() ) - 1, getAbsoluteY(), getBorderColors());
-  }
+    /**
+     * @deprecated Use getBorderColors()
+     */
+    public CharColor getDelimiterColors()
+    {
+        return getBorderColors();
+    }
 
-  /**
-   * Input-Behandlundg
-   */
-  protected boolean handleInput(InputChar ch)
-  {
-      return ch.isPrintable() && super.handleInput(ch);
-  }
+    /**
+     * @deprecated Use getBorderDefaultColors()
+     */
+    public CharColor getDelimiterDefaultColors()
+    {
+        return getBorderDefaultColors();
+    }
 
-  private String getDelimiterString()
-  {
-    if ( _delimiter == null )
-      return new String("|");
+    public void setText(String text)
+    {
+        if ( text == null )
+            super.setText(text);
+        else
+        {
+            if ( text.indexOf("\n") != - 1 )
+                super.setText(text.substring(0, text.indexOf("\n")));
+            else
+                super.setText(text);
+        }
+    }
 
-    return _delimiter;
-  }
+    protected static String getDefaultDelimiter()
+    {
+        return "|";
+    }
+
+    protected Rectangle getTextRectangle()
+    {
+        Rectangle result = (Rectangle)getSize().clone();
+        result.setLocation(getAbsoluteX() + 1, getAbsoluteY());
+        result.setWidth(result.getWidth() - 2);
+
+        return result;
+    }
+
+    protected void doPaint()
+    {
+        super.doPaint();
+
+        // Begrenzer malen
+        Toolkit.printString(getDelimiterString(), getAbsoluteX(), getAbsoluteY(), getBorderColors());
+        Toolkit.printString(getDelimiterString(), ( getAbsoluteX() + getSize().getWidth() ) - 1, getAbsoluteY(), getBorderColors());
+    }
+
+    /**
+     * Input-Behandlundg
+     */
+    protected boolean handleInput(InputChar ch)
+    {
+        return ch.isPrintable() && super.handleInput(ch);
+    }
+
+    private String getDelimiterString()
+    {
+        if ( _delimiter == null )
+            return new String("|");
+
+        return _delimiter;
+    }
 }

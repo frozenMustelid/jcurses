@@ -11,91 +11,91 @@ import jcurses.event.WindowManagerBlockingCondition;
 public class Dialog extends Window implements WindowListener, WindowManagerBlockingCondition
 {
 
-  /**
-   * The constructor
-   * 
-   * @param x the x coordinate of the dialog window's top left corner
-   * @param y the y coordinate of the dialog window's top left corner
-   * @param width the width of the dialog window
-   * @param height the height of the dialog window
-   * @param title dialog's title
-   * @param border true, if the dialog window has a border, false otherwise
-   */
-  public Dialog(int x, int y, int width, int height, boolean border, String title)
-  {
-    super(x, y, width, height, border, title);
-    addListener(this);
-  }
-
-  /**
-   * The constructor. The dialog window is centered ot the screen.
-   * 
-   * @param width the width of the dialog window
-   * @param height the height of the dialog window
-   * @param title dialog's title
-   * @param border true, if the dialog window has a border, false otherwise
-   */
-  public Dialog(int width, int height, boolean border, String title)
-  {
-    super(width, height, border, title);
-    addListener(this);
-  }
-
-  public boolean evaluate()
-  {
-    return ! isClosed();
-  }
-
-  public void showOnly()
-  {
-    super.show();
-  }
-
-  public void execute()
-  {
-    if ( ! isVisible() )
-      showOnly();
-
-    if ( WindowManager.isInputThread() )
-      WindowManager.blockInputThread(this);
-    else
-      waitForNotify();
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see jcurses.widgets.Window#show()
-   */
-  public void show()
-  {
-    showOnly();
-    execute();
-  }
-
-  public void windowChanged(WindowEvent event)
-  {
-    if ( event.getType() == WindowEvent.CLOSING )
-      close();
-    else if ( event.getType() == WindowEvent.CLOSED )
-      notifyOfClosing();
-  }
-
-  private synchronized void waitForNotify()
-  {
-    try
+    /**
+     * The constructor
+     *
+     * @param x the x coordinate of the dialog window's top left corner
+     * @param y the y coordinate of the dialog window's top left corner
+     * @param width the width of the dialog window
+     * @param height the height of the dialog window
+     * @param title dialog's title
+     * @param border true, if the dialog window has a border, false otherwise
+     */
+    public Dialog(int x, int y, int width, int height, boolean border, String title)
     {
-      wait();
+        super(x, y, width, height, border, title);
+        addListener(this);
     }
-    catch (InterruptedException e)
-    {
-      //ignore this - it is normal
-    }
-  }
 
-  private synchronized void notifyOfClosing()
-  {
-    notify();
-  }
+    /**
+     * The constructor. The dialog window is centered ot the screen.
+     *
+     * @param width the width of the dialog window
+     * @param height the height of the dialog window
+     * @param title dialog's title
+     * @param border true, if the dialog window has a border, false otherwise
+     */
+    public Dialog(int width, int height, boolean border, String title)
+    {
+        super(width, height, border, title);
+        addListener(this);
+    }
+
+    public boolean evaluate()
+    {
+        return ! isClosed();
+    }
+
+    public void showOnly()
+    {
+        super.show();
+    }
+
+    public void execute()
+    {
+        if ( ! isVisible() )
+            showOnly();
+
+        if ( WindowManager.isInputThread() )
+            WindowManager.blockInputThread(this);
+        else
+            waitForNotify();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see jcurses.widgets.Window#show()
+     */
+    public void show()
+    {
+        showOnly();
+        execute();
+    }
+
+    public void windowChanged(WindowEvent event)
+    {
+        if ( event.getType() == WindowEvent.CLOSING )
+            close();
+        else if ( event.getType() == WindowEvent.CLOSED )
+            notifyOfClosing();
+    }
+
+    private synchronized void waitForNotify()
+    {
+        try
+        {
+            wait();
+        }
+        catch (InterruptedException e)
+        {
+            //ignore this - it is normal
+        }
+    }
+
+    private synchronized void notifyOfClosing()
+    {
+        notify();
+    }
 
 }

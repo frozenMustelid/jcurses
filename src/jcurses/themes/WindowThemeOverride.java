@@ -1,6 +1,6 @@
 /*
  * Created on Jul 23, 2004
- * 
+ *
  * TODO To change the template for this generated file go to Window - Preferences - Java - Code Style - Code Templates
  */
 
@@ -11,42 +11,42 @@ import jcurses.widgets.Window;
 
 /**
  * @author alewis
- *  
+ *
  */
 public class WindowThemeOverride extends BaseTheme
 {
-  Theme baseTheme = null;
+    Theme baseTheme = null;
 
-  public WindowThemeOverride()
-  {
-  // need zero arg contructor
-  }
+    public WindowThemeOverride()
+    {
+        // need zero arg contructor
+    }
 
-  public WindowThemeOverride(Theme aBaseTheme)
-  {
-    setBaseTheme(aBaseTheme);
-  }
+    public WindowThemeOverride(Theme aBaseTheme)
+    {
+        setBaseTheme(aBaseTheme);
+    }
 
-  public CharColor getColor(String aKey)
-  {
-    CharColor mColor = (CharColor)themeKeys.get(aKey);
-    
-    if ( mColor == null && baseTheme != null )
-      mColor = baseTheme.getColor(aKey);
+    public CharColor getColor(String aKey)
+    {
+        CharColor mColor = (CharColor)themeKeys.get(aKey);
 
-    if ( mColor == null )
-      mColor = Window.getTheme().getColor(aKey);
+        if ( mColor == null && baseTheme != null )
+            mColor = baseTheme.getColor(aKey);
 
-    return mColor;
-  }
+        if ( mColor == null )
+            mColor = Window.getTheme().getColor(aKey);
 
-  public Theme getBaseTheme()
-  {
-    return baseTheme;
-  }
+        return mColor;
+    }
 
-  public void setBaseTheme(Theme aBaseTheme)
-  {
-    baseTheme = aBaseTheme;
-  }
+    public Theme getBaseTheme()
+    {
+        return baseTheme;
+    }
+
+    public void setBaseTheme(Theme aBaseTheme)
+    {
+        baseTheme = aBaseTheme;
+    }
 }

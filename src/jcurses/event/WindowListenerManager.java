@@ -9,25 +9,25 @@ package jcurses.event;
 public class WindowListenerManager extends ListenerManager
 {
 
-  protected void doHandleEvent(Event event, Object listener)
-  {
-    ( (WindowListener)listener ).windowChanged((WindowEvent)event);
-  }
-
-  protected void verifyListener(Object listener)
-  {
-    if ( ! ( listener instanceof WindowListener ) )
+    protected void doHandleEvent(Event event, Object listener)
     {
-      throw new RuntimeException("illegal listener type");
+        ( (WindowListener)listener ).windowChanged((WindowEvent)event);
     }
-  }
 
-  protected void verifyEvent(Event event)
-  {
-    if ( ! ( event instanceof WindowEvent ) )
+    protected void verifyListener(Object listener)
     {
-      throw new RuntimeException("illegal event type");
+        if ( ! ( listener instanceof WindowListener ) )
+        {
+            throw new RuntimeException("illegal listener type");
+        }
     }
-  }
+
+    protected void verifyEvent(Event event)
+    {
+        if ( ! ( event instanceof WindowEvent ) )
+        {
+            throw new RuntimeException("illegal event type");
+        }
+    }
 
 }

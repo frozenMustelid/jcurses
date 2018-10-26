@@ -4,16 +4,16 @@
 #include <windows.h>
 
 typedef struct  {
-	jshort background;
-	jshort foreground;
+  jshort background;
+  jshort foreground;
 } color_pair;
 
 FILE * logStream = NULL;
 
 void initLog() {
-	/*logStream = fopen("jcurses2.log","a");
-	fprintf(logStream, "native logging initialized!\n");
-	fflush(logStream);*/
+  /*logStream = fopen("jcurses2.log","a");
+    fprintf(logStream, "native logging initialized!\n");
+    fflush(logStream);*/
 }
 
 
@@ -75,39 +75,39 @@ WORD lastMode;
 
 
 JNIEXPORT jint JNICALL Java_jcurses_system_Toolkit_getScreenWidth (JNIEnv * env, jclass class) {
-	return COLS;
+  return COLS;
 }
 
 
 JNIEXPORT jint JNICALL Java_jcurses_system_Toolkit_getScreenHeight (JNIEnv * env, jclass class) {
-	return LINES;
+  return LINES;
 }
 
 
 JNIEXPORT jint JNICALL Java_jcurses_system_Toolkit_hasColorsAsInteger (JNIEnv * env, jclass class) {
-	return 1;
+  return 1;
 }
 
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_fillAttributes (JNIEnv * env , jclass class, jlongArray attributes) {
-	jlong attrs[3];
-	attrs[0] = JCURSES_NORMAL;
-	attrs[1] = JCURSES_REVERSE;
-	attrs[2] = JCURSES_BOLD;
-	(*env)->SetLongArrayRegion(env,attributes,0,3,attrs);
+  jlong attrs[3];
+  attrs[0] = JCURSES_NORMAL;
+  attrs[1] = JCURSES_REVERSE;
+  attrs[2] = JCURSES_BOLD;
+  (*env)->SetLongArrayRegion(env,attributes,0,3,attrs);
 }
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_fillBasicColors (JNIEnv * env , jclass class, jshortArray basicColors) {
-	short colors[8];
-	colors[0] = JCURSES_BLACK;
-	colors[1] = JCURSES_RED;
-	colors[2] = JCURSES_GREEN;
-	colors[3] = JCURSES_YELLOW;
-	colors[4] = JCURSES_BLUE;
-	colors[5] = JCURSES_MAGENTA;
-	colors[6] = JCURSES_CYAN;
-	colors[7] = JCURSES_WHITE;
-	(*env)->SetShortArrayRegion(env,basicColors,0,8,colors);
+  short colors[8];
+  colors[0] = JCURSES_BLACK;
+  colors[1] = JCURSES_RED;
+  colors[2] = JCURSES_GREEN;
+  colors[3] = JCURSES_YELLOW;
+  colors[4] = JCURSES_BLUE;
+  colors[5] = JCURSES_MAGENTA;
+  colors[6] = JCURSES_CYAN;
+  colors[7] = JCURSES_WHITE;
+  (*env)->SetShortArrayRegion(env,basicColors,0,8,colors);
 
 }
 
@@ -116,69 +116,69 @@ JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_fillBasicColors (JNIEnv * env
 
 
 WORD getForegroundColor(int color) {
-	WORD result;
-	switch(color) {
-		case JCURSES_BLACK:
-			result = 0;
-			break;
-		case JCURSES_WHITE:
-			result = FOREGROUND_BLUE|FOREGROUND_RED|FOREGROUND_GREEN;
-			break;
-		case JCURSES_BLUE:
-			result = FOREGROUND_BLUE;
-			break;
-		case JCURSES_GREEN:
-			result = FOREGROUND_GREEN;
-			break;
-		case JCURSES_RED:
-			result = FOREGROUND_RED;
-			break;
-		case JCURSES_YELLOW:
-			result = FOREGROUND_RED|FOREGROUND_GREEN;
-			break;
-		case JCURSES_MAGENTA:
-			result = FOREGROUND_RED|FOREGROUND_BLUE;
-			break;
-		case JCURSES_CYAN:
-			result = FOREGROUND_BLUE|FOREGROUND_GREEN;
-			break;
-		default:result = 0;
-	}
+  WORD result;
+  switch(color) {
+  case JCURSES_BLACK:
+    result = 0;
+    break;
+  case JCURSES_WHITE:
+    result = FOREGROUND_BLUE|FOREGROUND_RED|FOREGROUND_GREEN;
+    break;
+  case JCURSES_BLUE:
+    result = FOREGROUND_BLUE;
+    break;
+  case JCURSES_GREEN:
+    result = FOREGROUND_GREEN;
+    break;
+  case JCURSES_RED:
+    result = FOREGROUND_RED;
+    break;
+  case JCURSES_YELLOW:
+    result = FOREGROUND_RED|FOREGROUND_GREEN;
+    break;
+  case JCURSES_MAGENTA:
+    result = FOREGROUND_RED|FOREGROUND_BLUE;
+    break;
+  case JCURSES_CYAN:
+    result = FOREGROUND_BLUE|FOREGROUND_GREEN;
+    break;
+  default:result = 0;
+  }
 
-	return result;
+  return result;
 }
 
 WORD getBackgroundColor(int color) {
-	WORD result;
-	switch(color) {
-		case JCURSES_BLACK:
-			result = 0;
-			break;
-		case JCURSES_WHITE:
-			result = BACKGROUND_BLUE|BACKGROUND_RED|BACKGROUND_GREEN;
-			break;
-		case JCURSES_BLUE:
-			result = BACKGROUND_BLUE;
-			break;
-		case JCURSES_GREEN:
-			result = BACKGROUND_GREEN;
-			break;
-		case JCURSES_RED:
-			result = BACKGROUND_RED;
-			break;
-		case JCURSES_YELLOW:
-			result = BACKGROUND_RED|BACKGROUND_GREEN;
-			break;
-		case JCURSES_MAGENTA:
-			result = BACKGROUND_RED|BACKGROUND_BLUE;
-			break;
-		case JCURSES_CYAN:
-			result = BACKGROUND_BLUE|BACKGROUND_GREEN;
-			break;
-		default:result = 0;
-	}
+  WORD result;
+  switch(color) {
+  case JCURSES_BLACK:
+    result = 0;
+    break;
+  case JCURSES_WHITE:
+    result = BACKGROUND_BLUE|BACKGROUND_RED|BACKGROUND_GREEN;
+    break;
+  case JCURSES_BLUE:
+    result = BACKGROUND_BLUE;
+    break;
+  case JCURSES_GREEN:
+    result = BACKGROUND_GREEN;
+    break;
+  case JCURSES_RED:
+    result = BACKGROUND_RED;
+    break;
+  case JCURSES_YELLOW:
+    result = BACKGROUND_RED|BACKGROUND_GREEN;
+    break;
+  case JCURSES_MAGENTA:
+    result = BACKGROUND_RED|BACKGROUND_BLUE;
+    break;
+  case JCURSES_CYAN:
+    result = BACKGROUND_BLUE|BACKGROUND_GREEN;
+    break;
+  default:result = 0;
+  }
 
-	return result;
+  return result;
 }
 
 
@@ -188,8 +188,8 @@ WORD getBackgroundColor(int color) {
 color_pair pairs [65];
 
 void init_pair (jshort number, jshort background, jshort foreground) {
-	 pairs[number].background =  background;
-	 pairs[number].foreground =  foreground;
+  pairs[number].background =  background;
+  pairs[number].foreground =  foreground;
 
 }
 
@@ -197,44 +197,44 @@ void init_pair (jshort number, jshort background, jshort foreground) {
 
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_initColorPair (JNIEnv * env, jclass class, jshort background,
-																	 jshort foreground, jshort number) {
-	init_pair(number+1,background, foreground);
+								  jshort foreground, jshort number) {
+  init_pair(number+1,background, foreground);
 }
 
 
 jint computeChtype(jshort number) {
-	return 0;
+  return 0;
 }
 
 JNIEXPORT jint JNICALL Java_jcurses_system_Toolkit_computeChtype (JNIEnv * env, jclass class, jshort number) {
-	return computeChtype(number);
+  return computeChtype(number);
 }
 
 
 int getAbsoluteX(int relativeX) {
-	return relativeX+info->srWindow.Left;
+  return relativeX+info->srWindow.Left;
 }
 
 
 int getAbsoluteY(int relativeY) {
-	return relativeY+info->srWindow.Top;
+  return relativeY+info->srWindow.Top;
 }
 
 
 void init() {
-	initLog();
-	inputHandle=GetStdHandle(STD_INPUT_HANDLE);
-	outputHandle=GetStdHandle(STD_OUTPUT_HANDLE);
-	info = malloc(sizeof(CONSOLE_SCREEN_BUFFER_INFO));
-	GetConsoleScreenBufferInfo(outputHandle, info);
-	COLS=info->srWindow.Right-info->srWindow.Left+1;
-	LINES=info->srWindow.Bottom-info->srWindow.Top+1;
-	lastMode = info->wAttributes;
+  initLog();
+  inputHandle=GetStdHandle(STD_INPUT_HANDLE);
+  outputHandle=GetStdHandle(STD_OUTPUT_HANDLE);
+  info = malloc(sizeof(CONSOLE_SCREEN_BUFFER_INFO));
+  GetConsoleScreenBufferInfo(outputHandle, info);
+  COLS=info->srWindow.Right-info->srWindow.Left+1;
+  LINES=info->srWindow.Bottom-info->srWindow.Top+1;
+  lastMode = info->wAttributes;
 }
 
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_init (JNIEnv * env, jclass class) {
-	init();
+  init();
 }
 
 
@@ -242,51 +242,51 @@ JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_init (JNIEnv * env, jclass cl
 
 
 void setTextMode(jshort number, jlong attr) {
-	WORD background = getBackgroundColor(pairs[number].background);
-	WORD foreground = getForegroundColor(pairs[number].foreground);
-	if (attr == JCURSES_BOLD) {
-		foreground = foreground|FOREGROUND_INTENSITY;
-	}
-	if (attr == JCURSES_REVERSE) {
-		background = getBackgroundColor(pairs[number].foreground);
-		foreground = getForegroundColor(pairs[number].background);
-	}
-	SetConsoleTextAttribute(outputHandle,background|foreground);
+  WORD background = getBackgroundColor(pairs[number].background);
+  WORD foreground = getForegroundColor(pairs[number].foreground);
+  if (attr == JCURSES_BOLD) {
+    foreground = foreground|FOREGROUND_INTENSITY;
+  }
+  if (attr == JCURSES_REVERSE) {
+    background = getBackgroundColor(pairs[number].foreground);
+    foreground = getForegroundColor(pairs[number].background);
+  }
+  SetConsoleTextAttribute(outputHandle,background|foreground);
 }
 
 
 WORD getTextMode(jshort number, jlong attr) {
-	WORD tmp;
-	WORD background = getBackgroundColor(pairs[number].background);
-	WORD foreground = getForegroundColor(pairs[number].foreground);
-	if (attr == JCURSES_BOLD) {
-		foreground = foreground|FOREGROUND_INTENSITY;
-	}
-	if (attr == JCURSES_REVERSE) {
-		background = getBackgroundColor(pairs[number].foreground);
-		foreground = getForegroundColor(pairs[number].background);
-	}
+  WORD tmp;
+  WORD background = getBackgroundColor(pairs[number].background);
+  WORD foreground = getForegroundColor(pairs[number].foreground);
+  if (attr == JCURSES_BOLD) {
+    foreground = foreground|FOREGROUND_INTENSITY;
+  }
+  if (attr == JCURSES_REVERSE) {
+    background = getBackgroundColor(pairs[number].foreground);
+    foreground = getForegroundColor(pairs[number].background);
+  }
 
-	return background|foreground;
+  return background|foreground;
 
 }
 
 void clear_box2(int x, int y, int width, int height, WORD colors) {
-	int i, j;
-	COORD coord;
-	DWORD buf;
-	for (j=0; j<height; j++) {
-		coord.X = getAbsoluteX(x);
-		coord.Y = getAbsoluteY(y+j);
-		FillConsoleOutputCharacter(outputHandle,' ',width,coord,&buf);
-		FillConsoleOutputAttribute(outputHandle,colors,width,coord,&buf);
-	}
+  int i, j;
+  COORD coord;
+  DWORD buf;
+  for (j=0; j<height; j++) {
+    coord.X = getAbsoluteX(x);
+    coord.Y = getAbsoluteY(y+j);
+    FillConsoleOutputCharacter(outputHandle,' ',width,coord,&buf);
+    FillConsoleOutputAttribute(outputHandle,colors,width,coord,&buf);
+  }
 
-	fflush(logStream);
+  fflush(logStream);
 }
 
 void clear_box(int x, int y, int width, int height, jshort number, jlong attr) {
-	clear_box2(x,y,width,height,getTextMode(number+1, attr));
+  clear_box2(x,y,width,height,getTextMode(number+1, attr));
 }
 
 
@@ -294,48 +294,48 @@ void clear_box(int x, int y, int width, int height, jshort number, jlong attr) {
 
 
 void clearScreen(jshort number, jlong attr) {
-	clear_box(0,0,COLS,LINES,number, attr);
+  clear_box(0,0,COLS,LINES,number, attr);
 }
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_clearScreen (JNIEnv * env, jclass class, jshort number, jlong attr) {
-	clearScreen(number,attr);
+  clearScreen(number,attr);
 }
 
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_drawRectangle (JNIEnv * env , jclass class, jint x, jint y,
-																	jint width, jint height, jshort number, jlong attr) {
-	clear_box(x, y, width,height,number, attr);
+								  jint width, jint height, jshort number, jlong attr) {
+  clear_box(x, y, width,height,number, attr);
 }
 
 
 void _shutdown() {
-	clear_box2(0,0,COLS,LINES,lastMode);
-	SetConsoleTextAttribute(outputHandle,lastMode);
+  clear_box2(0,0,COLS,LINES,lastMode);
+  SetConsoleTextAttribute(outputHandle,lastMode);
 }
 
 
 
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_shutdown (JNIEnv * env, jclass class) {
-	_shutdown();
+  _shutdown();
 }
 
 
 void drawHorizontalLineWithChars(jint startX, jint endX, jint Y, jshort number,jlong attr, char ch) {
-	int width = endX-startX+1;
-	COORD coord;
-	DWORD buf;
-	WORD colors = getTextMode(number+1, attr);
-	coord.X = getAbsoluteX(startX);
-	coord.Y = getAbsoluteY(Y);
-	FillConsoleOutputCharacter(outputHandle,ch,width,coord,&buf);
-	FillConsoleOutputAttribute(outputHandle,colors,width,coord,&buf);
+  int width = endX-startX+1;
+  COORD coord;
+  DWORD buf;
+  WORD colors = getTextMode(number+1, attr);
+  coord.X = getAbsoluteX(startX);
+  coord.Y = getAbsoluteY(Y);
+  FillConsoleOutputCharacter(outputHandle,ch,width,coord,&buf);
+  FillConsoleOutputAttribute(outputHandle,colors,width,coord,&buf);
 
 }
 
 
 void drawChar(jint X, jint Y, jshort number, jlong attr,char ch) {
-	drawHorizontalLineWithChars(X,X,Y,number, attr,ch);
+  drawHorizontalLineWithChars(X,X,Y,number, attr,ch);
 }
 
 
@@ -343,28 +343,28 @@ void drawChar(jint X, jint Y, jshort number, jlong attr,char ch) {
 
 void drawLineWithChars(jint start, jint end, jint end2, jshort number, jlong attr,short alignment, char ch) {
 
-	int x1, x2, i;
+  int x1, x2, i;
   /*Zeichnen vorbereiten*/
-   setTextMode(number+1, attr);
+  setTextMode(number+1, attr);
 
-	/*Grenzen ermitteln*/
-	if (start < end) {
-		x1 = start;
-		x2 = end;
-	}  else {
-		x1 = end;
-		x2 = start;
-	}
+  /*Grenzen ermitteln*/
+  if (start < end) {
+    x1 = start;
+    x2 = end;
+  }  else {
+    x1 = end;
+    x2 = start;
+  }
 
-	/*Zeichnen*/
+  /*Zeichnen*/
 
-	if (!alignment) {
-		for (i=x1; i<=x2; i++) {
-			drawChar(end2,i,number, attr,ch);
-		}
-	} else {
-		drawHorizontalLineWithChars(x1,x2,end2,number, attr,ch);
-	}
+  if (!alignment) {
+    for (i=x1; i<=x2; i++) {
+      drawChar(end2,i,number, attr,ch);
+    }
+  } else {
+    drawHorizontalLineWithChars(x1,x2,end2,number, attr,ch);
+  }
 
 }
 
@@ -373,117 +373,117 @@ void drawLineWithChars(jint start, jint end, jint end2, jshort number, jlong att
 
 void drawLine(jint start, jint end, jint end2, jshort number, jlong attr,short alignment) {
 
-	if (alignment) {
-		drawLineWithChars(start, end, end2, number, attr, alignment, ACS_HLINE);
-	} else {
-	    drawLineWithChars(start, end, end2, number, attr, alignment, ACS_VLINE);
-	}
+  if (alignment) {
+    drawLineWithChars(start, end, end2, number, attr, alignment, ACS_HLINE);
+  } else {
+    drawLineWithChars(start, end, end2, number, attr, alignment, ACS_VLINE);
+  }
 }
 
 
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_drawHorizontalLine (JNIEnv * env, jclass class, jint startX, jint startY
-																	  ,jint endX, jshort number, jlong attr) {
-   drawLine(startX, endX, startY, number, attr,1);
+								       ,jint endX, jshort number, jlong attr) {
+  drawLine(startX, endX, startY, number, attr,1);
 
 }
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_drawVerticalLine (JNIEnv * env, jclass class, jint startX,
-																	 jint startY, jint endY, jshort number, jlong attr) {
-	drawLine(startY, endY, startX, number, attr,0);
+								     jint startY, jint endY, jshort number, jlong attr) {
+  drawLine(startY, endY, startX, number, attr,0);
 }
 
 
 void drawThickLine(jint start, jint end, jint end2, jshort number, jlong attr,short alignment) {
-	drawLineWithChars(start, end, end2, number, attr, alignment, ACS_CHESSBOARD);
+  drawLineWithChars(start, end, end2, number, attr, alignment, ACS_CHESSBOARD);
 }
 
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_drawHorizontalThickLine (JNIEnv * env, jclass class, jint startX, jint startY
-																	  ,jint endX, jshort number,jlong attr) {
-   drawThickLine(startX, endX, startY, number, attr,1);
+									    ,jint endX, jshort number,jlong attr) {
+  drawThickLine(startX, endX, startY, number, attr,1);
 
 }
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_drawVerticalThickLine (JNIEnv * env, jclass class, jint startX,
-																	 jint startY, jint endY, jshort number,jlong attr) {
-	drawThickLine(startY, endY, startX, number, attr, 0);
+									  jint startY, jint endY, jshort number,jlong attr) {
+  drawThickLine(startY, endY, startX, number, attr, 0);
 }
 
 
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_drawCorner (JNIEnv * env, jclass class, jint aX, jint aY,
-																jint aPos, jshort number, jlong attr) {
+							       jint aPos, jshort number, jlong attr) {
 	
-	char character;
+  char character;
 
-   	setTextMode(number+1, attr);
+  setTextMode(number+1, attr);
 	
-	switch( aPos )
+  switch( aPos )
     {
     case jcurses_system_Toolkit_LL_CORNER:
-        character = ACS_LLCORNER;
-        break;
+      character = ACS_LLCORNER;
+      break;
 
     case jcurses_system_Toolkit_LR_CORNER:
-        character = ACS_LRCORNER;
-        break;
+      character = ACS_LRCORNER;
+      break;
 
     case jcurses_system_Toolkit_UL_CORNER:
-        character = ACS_ULCORNER;
-        break;
+      character = ACS_ULCORNER;
+      break;
 
     case jcurses_system_Toolkit_UR_CORNER:
-        character = ACS_URCORNER;
-        break;
+      character = ACS_URCORNER;
+      break;
 
     default:
-        return;
+      return;
     }
 	
-	drawChar(aX, aY, number, attr, character);
+  drawChar(aX, aY, number, attr, character);
 }
 
 
 
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_drawBorder(JNIEnv * env, jclass class, jint x, jint y, jint width,
-																jint height, jshort number, jlong attr) {
-   /*Zeichnen vorbereiten*/
-   int i=0;
+							      jint height, jshort number, jlong attr) {
+  /*Zeichnen vorbereiten*/
+  int i=0;
 
-   /*Obere Linke Ecke setzen*/
-   drawChar(x,y,number, attr,ACS_ULCORNER);
+  /*Obere Linke Ecke setzen*/
+  drawChar(x,y,number, attr,ACS_ULCORNER);
 
-   /*Obere Seite ziehen*/
-   drawHorizontalLineWithChars(x+1,x+width-2,y,number, attr,ACS_HLINE);
-
-
-
-   /*Obere Rechte Ecke setzen*/
-   drawChar(x+width-1,y,number, attr,ACS_URCORNER);
-
-   /*Rechte Seite ziehen*/
-
-   for (i=1; i<(height-1); i++) {
-	 drawChar(x+width-1,y+i,number, attr,ACS_VLINE);
-   }
+  /*Obere Seite ziehen*/
+  drawHorizontalLineWithChars(x+1,x+width-2,y,number, attr,ACS_HLINE);
 
 
-   /*Untere rechte Ecke setzen*/
-   drawChar(x+width-1,y+height-1,number, attr,ACS_LRCORNER);
 
-   /*Untere Seite ziehen*/
-   drawHorizontalLineWithChars(x+1,x+width-2,y+height-1,number, attr,ACS_HLINE);
+  /*Obere Rechte Ecke setzen*/
+  drawChar(x+width-1,y,number, attr,ACS_URCORNER);
+
+  /*Rechte Seite ziehen*/
+
+  for (i=1; i<(height-1); i++) {
+    drawChar(x+width-1,y+i,number, attr,ACS_VLINE);
+  }
 
 
-   /*Untere Linke Ecke setzen*/
-   drawChar(x, y+height-1,number, attr,ACS_LLCORNER);
+  /*Untere rechte Ecke setzen*/
+  drawChar(x+width-1,y+height-1,number, attr,ACS_LRCORNER);
 
-   /*Linke Seite ziehen*/
-   for (i=1; i<(height-1); i++) {
-	 drawChar(x, y+height-1-i,number, attr,ACS_VLINE);
-   }
+  /*Untere Seite ziehen*/
+  drawHorizontalLineWithChars(x+1,x+width-2,y+height-1,number, attr,ACS_HLINE);
+
+
+  /*Untere Linke Ecke setzen*/
+  drawChar(x, y+height-1,number, attr,ACS_LLCORNER);
+
+  /*Linke Seite ziehen*/
+  for (i=1; i<(height-1); i++) {
+    drawChar(x, y+height-1-i,number, attr,ACS_VLINE);
+  }
 
 
 
@@ -491,202 +491,194 @@ JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_drawBorder(JNIEnv * env, jcla
 
 
 void printSimpleString(unsigned char * charArray, int length, int x, int y, jshort number, jlong attr) {
-	COORD coord;
-	DWORD buf;
-	char c=charArray[length-1];
-	WORD colors = getTextMode(number+1, attr);
+  COORD coord;
+  DWORD buf;
+  char c=charArray[length-1];
+  WORD colors = getTextMode(number+1, attr);
 
-	coord.X = getAbsoluteX(x);
-	coord.Y = getAbsoluteY(y);
-	WriteConsoleOutputCharacter(outputHandle,charArray,length,coord,&buf);
-	FillConsoleOutputAttribute(outputHandle,colors,length,coord,&buf);
+  coord.X = getAbsoluteX(x);
+  coord.Y = getAbsoluteY(y);
+  WriteConsoleOutputCharacter(outputHandle,charArray,length,coord,&buf);
+  FillConsoleOutputAttribute(outputHandle,colors,length,coord,&buf);
 }
 
 
 void printString(unsigned char * charArray, int length, jint x, jint y, jint width, jint height, jshort number, jlong attr) {
 
-	int j,xpos,ypos;
-	unsigned char c;
-	char * stringToPrint = malloc(width+1);
-	int printLength = 0;
-	int toPrint = 0;
+  int j,xpos,ypos;
+  unsigned char c;
+  char * stringToPrint = malloc(width+1);
+  int printLength = 0;
+  int toPrint = 0;
 
 
-	xpos=x-1;
-	ypos=y;
+  xpos=x-1;
+  ypos=y;
 
 
-	for (j=0; j<length; j++) {
-		c = charArray[j];
-		if (c!='\r') {
-			if ( c == '\t') {
-				c = ' ';
-			}
-			if (c!='\n') {
-				xpos++;
-				printLength++;
-				stringToPrint[printLength-1] = c;
-				if (xpos == (x+width)) {
-					printSimpleString(stringToPrint,printLength -1,x,ypos,number, attr);
-					xpos = x;
-					ypos++;
-					if (ypos == (y+height)) {
-						printLength = 0;
-						break;
-					}
-					printLength = 1;
-					stringToPrint[printLength-1] = c;
-				}
-			}  else {
-				printSimpleString(stringToPrint,printLength,x,ypos,number, attr);
-				xpos = x-1;
-				ypos++;
-				if (ypos == (y+height)) {
-					printLength = 0;
-					break;
-				}
-				printLength = 0;
-			}
-		}
-
+  for (j=0; j<length; j++) {
+    c = charArray[j];
+    if (c!='\r') {
+      if ( c == '\t') {
+	c = ' ';
+      }
+      if (c!='\n') {
+	xpos++;
+	printLength++;
+	stringToPrint[printLength-1] = c;
+	if (xpos == (x+width)) {
+	  printSimpleString(stringToPrint,printLength -1,x,ypos,number, attr);
+	  xpos = x;
+	  ypos++;
+	  if (ypos == (y+height)) {
+	    printLength = 0;
+	    break;
+	  }
+	  printLength = 1;
+	  stringToPrint[printLength-1] = c;
 	}
-	if (printLength > 0) {
-	  printSimpleString(stringToPrint,printLength,x,ypos,number, attr);
+      }  else {
+	printSimpleString(stringToPrint,printLength,x,ypos,number, attr);
+	xpos = x-1;
+	ypos++;
+	if (ypos == (y+height)) {
+	  printLength = 0;
+	  break;
 	}
-	free(stringToPrint);
+	printLength = 0;
+      }
+    }
+
+  }
+  if (printLength > 0) {
+    printSimpleString(stringToPrint,printLength,x,ypos,number, attr);
+  }
+  free(stringToPrint);
 }
 
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_printString (JNIEnv * env, jclass class, jbyteArray bytes,
-																	jint x, jint y, jint width, jint height, jshort number, jlong attr) {
+								jint x, jint y, jint width, jint height, jshort number, jlong attr) {
 
-	int length = (*env)->GetArrayLength(env,bytes);
-	unsigned char * charArray = (*env)->GetByteArrayElements(env, bytes, NULL);
-	printString(charArray, length, x, y, width ,height, number, attr);
+  int length = (*env)->GetArrayLength(env,bytes);
+  unsigned char * charArray = (*env)->GetByteArrayElements(env, bytes, NULL);
+  printString(charArray, length, x, y, width ,height, number, attr);
 
 
 }
 
 
 JNIEXPORT jint JNICALL Java_jcurses_system_Toolkit_readByte (JNIEnv * env, jclass class) {
-	int code= getch();
-	int nextCode = 0;
-	if (code == '\r') {
-		code = '\n';
-	} else if ((code == 0) || (code == 224)) {
-		nextCode = getch();
-		switch (nextCode) {
-			case 59:
-				code = KEY_F1;break;
-			case 60:
-				code = KEY_F2;break;
-			case 61:
-				code = KEY_F3;break;
-			case 62:
-				code = KEY_F4;break;
-			case 63:
-				code = KEY_F5;break;
-			case 64:
-				code = KEY_F6;break;
-			case 65:
-				code = KEY_F7;break;
-			case 66:
-				code = KEY_F8;break;
-			case 67:
-				code = KEY_F9;break;
-			case 68:
-				code = KEY_F10;break;
-			case 133:
-				code = KEY_F11;break;
-			case 134:
-				code = KEY_F12;break;
-			case 75:
-				code = KEY_LEFT;break;
-			case 77:
-				code = KEY_RIGHT;break;
-			case 72:
-				code = KEY_UP;break;
-			case 80:
-				code = KEY_DOWN;break;
-			case 82:
-				code = KEY_IC;break;
-			case 83:
-				code = KEY_DC;break;
-			case 71:
-				code = KEY_HOME;break;
-			case 79:
-				code = KEY_END;break;
-			case 73:
-				code = KEY_PPAGE;break;
-			case 81:
-				code = KEY_NPAGE;break;
-			default:
-				code = nextCode;
-		}
+  int code= getch();
+  int nextCode = 0;
+  if (code == '\r') {
+    code = '\n';
+  } else if ((code == 0) || (code == 224)) {
+    nextCode = getch();
+    switch (nextCode) {
+    case 59:
+      code = KEY_F1;break;
+    case 60:
+      code = KEY_F2;break;
+    case 61:
+      code = KEY_F3;break;
+    case 62:
+      code = KEY_F4;break;
+    case 63:
+      code = KEY_F5;break;
+    case 64:
+      code = KEY_F6;break;
+    case 65:
+      code = KEY_F7;break;
+    case 66:
+      code = KEY_F8;break;
+    case 67:
+      code = KEY_F9;break;
+    case 68:
+      code = KEY_F10;break;
+    case 133:
+      code = KEY_F11;break;
+    case 134:
+      code = KEY_F12;break;
+    case 75:
+      code = KEY_LEFT;break;
+    case 77:
+      code = KEY_RIGHT;break;
+    case 72:
+      code = KEY_UP;break;
+    case 80:
+      code = KEY_DOWN;break;
+    case 82:
+      code = KEY_IC;break;
+    case 83:
+      code = KEY_DC;break;
+    case 71:
+      code = KEY_HOME;break;
+    case 79:
+      code = KEY_END;break;
+    case 73:
+      code = KEY_PPAGE;break;
+    case 81:
+      code = KEY_NPAGE;break;
+    default:
+      code = nextCode;
+    }
 
-	}  else if (code == 8) {
-		code = KEY_BACKSPACE;
-	}
+  }  else if (code == 8) {
+    code = KEY_BACKSPACE;
+  }
 
-	return code;
+  return code;
 }
 
 
 
 JNIEXPORT jint JNICALL Java_jcurses_system_Toolkit_getSpecialKeyCode (JNIEnv * env, jclass class, jint code) {
-	return code;
+  return code;
 }
 
 
 
 void changeColors(jint x, jint y, jint width,jint height, jshort colorpair, jlong attr) {
-	int i,j;
-	COORD coord;
-	DWORD buf;
-	for (j=0; j<height; j++) {
-		coord.X = getAbsoluteX(x);
-		coord.Y = getAbsoluteY(y+j);
-		FillConsoleOutputAttribute(outputHandle,getTextMode(colorpair+1, attr),width,coord,&buf);
-	}
+  int i,j;
+  COORD coord;
+  DWORD buf;
+  for (j=0; j<height; j++) {
+    coord.X = getAbsoluteX(x);
+    coord.Y = getAbsoluteY(y+j);
+    FillConsoleOutputAttribute(outputHandle,getTextMode(colorpair+1, attr),width,coord,&buf);
+  }
 }
 
 
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_changeColors (JNIEnv *env, jclass clazz, jint x, jint y, jint width, jint height, jshort colorpair, jlong attr) {
-	changeColors(x,y,width,height,colorpair, attr);
+  changeColors(x,y,width,height,colorpair, attr);
 }
 
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_startPainting (JNIEnv * env, jclass clazz) {
-	//nothing, implementing, when all new made with refreshing
+  //nothing, implementing, when all new made with refreshing
 }
 
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_endPainting (JNIEnv * env , jclass clazz) {
-	//nothing, implementing, when all new made with refreshing
+  //nothing, implementing, when all new made with refreshing
 }
 
 //Nur zum Testen
 int main() {
-	int code;
-	while(1) {
-		code = getch();
-		printf("%d\n",code);
-	}
+  int code;
+  while(1) {
+    code = getch();
+    printf("%d\n",code);
+  }
 
-	return 0;
+  return 0;
 
 }
 
 
 JNIEXPORT void JNICALL Java_jcurses_system_Toolkit_beep(JNIEnv * env, jclass clazz) {
-	//Beep(880,3000);
+  //Beep(880,3000);
 }
-
-
-
-
-
-
-
-
