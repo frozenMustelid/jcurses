@@ -138,7 +138,7 @@ public class CheckBox extends Widget
   {
     if ( ch.equals(INPUT_CHANGE_STATUS) )
     {
-      setValue(( _checked ) ? false : true);
+      setValue(!_checked);
       paint();
       return true;
     }

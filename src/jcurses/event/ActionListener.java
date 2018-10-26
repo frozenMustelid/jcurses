@@ -11,6 +11,6 @@ public interface ActionListener {
     * 
     * @param event the event occured
     */
-	public abstract void actionPerformed(ActionEvent event);
+    void actionPerformed(ActionEvent event);
 
 }

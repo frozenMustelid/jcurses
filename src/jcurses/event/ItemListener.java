@@ -11,6 +11,6 @@ public interface ItemListener {
     * 
     * @param event the event occured
     */
-	public abstract void stateChanged(ItemEvent event);
+    void stateChanged(ItemEvent event);
 
 }

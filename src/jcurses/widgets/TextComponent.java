@@ -26,7 +26,7 @@ public class TextComponent extends Widget
   //private CharColor _focusedTextComponentColors = getFocusedTextComponentDefaultColors();
   ArrayList                           _lineLengths     = new ArrayList();
   ArrayList                           _lines           = new ArrayList();
-  StringBuffer                        _text            = new StringBuffer("");
+  StringBuffer                        _text            = new StringBuffer();
 
   //Listener
   private ValueChangedListenerManager _listenerManager = new ValueChangedListenerManager();

@@ -103,7 +103,7 @@ public class TextUtils {
 
 				if (line.length() > maxWidth) {
 					list.add(line.substring(0, maxWidth));
-					list.add(line.substring(maxWidth, line.length()));
+					list.add(line.substring(maxWidth));
 				} else {
 					list.add(line);
 				}

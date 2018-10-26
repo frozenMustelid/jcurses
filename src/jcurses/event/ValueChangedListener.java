@@ -11,6 +11,6 @@ public interface ValueChangedListener {
     * 
     * @param event the event occured
     */
-	public abstract void valueChanged(ValueChangedEvent event);
+    void valueChanged(ValueChangedEvent event);
 
 }

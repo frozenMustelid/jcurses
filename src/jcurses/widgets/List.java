@@ -969,7 +969,7 @@ public class List extends Widget implements IScrollable
     else
     {
       if ( _startPos != 0 )
-        item = item.substring(_startPos, item.length());
+        item = item.substring(_startPos);
     }
 
     if ( ( item.length() < width ) && ( toSelect ) )

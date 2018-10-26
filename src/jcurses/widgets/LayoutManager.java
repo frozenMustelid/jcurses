@@ -14,7 +14,7 @@ public interface LayoutManager
    * @param child widget to layout
    * @param constraints layouting constraints
    */
-  public void layout(Widget child, Object constraints);
+  void layout(Widget child, Object constraints);
 
   /**
    * The method is called by framework to bind the layout manager to a container. The implementing class must recognize whether this is already bound or
@@ -23,7 +23,7 @@ public interface LayoutManager
    * 
    * @param container container to bind
    */
-  public void bindToContainer(WidgetContainer container);
+  void bindToContainer(WidgetContainer container);
 
   /**
    * The method is called by framework to unbind the layout manager from its container. The implementing class must recognize whether this is already bound or
@@ -32,7 +32,7 @@ public interface LayoutManager
    *  
    */
 
-  public void unbindFromContainer();
+  void unbindFromContainer();
 
   /**
    * Adds a widget to the container
@@ -46,7 +46,7 @@ public interface LayoutManager
    * @param horizontalConstraint one of the WidgetConstants  
    */
 
-  public void addWidget(Widget widget, int x, int y, int width, int height, int verticalConstraint, int horizontalConstraint);
+  void addWidget(Widget widget, int x, int y, int width, int height, int verticalConstraint, int horizontalConstraint);
 
   /**
    * Removes a widget from the container
@@ -54,5 +54,5 @@ public interface LayoutManager
    * @param widget widget to be removed
    */
 
-  public void removeWidget(Widget widget);
+  void removeWidget(Widget widget);
 }

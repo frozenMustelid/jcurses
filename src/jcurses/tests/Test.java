@@ -101,8 +101,7 @@ public class Test extends Window implements ItemListener, ActionListener, ValueC
     manager.addWidget(_b2, 1, 4, 1, 1, ALIGNMENT_CENTER, ALIGNMENT_CENTER);
   }
 
-  public static void main(String[] args) throws Exception
-  {
+  public static void main(String[] args) {
     //Protocol initialisieren
     System.setProperty("jcurses.protocol.filename", "jcurses.log");
 

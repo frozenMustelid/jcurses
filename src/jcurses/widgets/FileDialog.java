@@ -319,7 +319,7 @@ public class FileDialog extends Dialog implements WidgetsConstants, ItemListener
     String path = file.getAbsolutePath().trim();
 
     if ( path.startsWith(directoryPath) )
-      path = path.substring(directoryPath.length(), path.length());
+      path = path.substring(directoryPath.length());
 
     if ( path.endsWith(File.separator) )
       path = path.substring(0, ( path.length() - 1 ));

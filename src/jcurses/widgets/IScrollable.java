@@ -18,7 +18,7 @@ public interface IScrollable
    * @return true, if the scrollbar is to be paint, false otherwise
    */
 
-  public boolean hasHorizontalScrollbar();
+  boolean hasHorizontalScrollbar();
 
   /**
    * This method returns true, if the using widget has a vertical scrollbar, ( independent of the size of it, this can be also empty)
@@ -26,14 +26,14 @@ public interface IScrollable
    * @return true, if the scrollbar is to be paint, false otherwise
    */
 
-  public boolean hasVerticalScrollbar();
+  boolean hasVerticalScrollbar();
 
   /**
    * The method returns the rectangle of the border, on which scrollbars are to be paint
    * 
    * @return rectangle of the border
    */
-  public Rectangle getBorderRectangle();
+  Rectangle getBorderRectangle();
 
   /**
    * The method returns colors, with which the border is to be paint
@@ -41,7 +41,7 @@ public interface IScrollable
    * @return border colors
    */
 
-  public CharColor getBorderColors();
+  CharColor getBorderColors();
 
   /**
    * The method returns colors, with which scrollbars are to be paint
@@ -49,30 +49,30 @@ public interface IScrollable
    * @return scrollbar colors
    */
 
-  public CharColor getScrollbarColors();
+  CharColor getScrollbarColors();
 
   /**
    * The method returns the offset of the horizontal scrollbar as part of the length of the side of the border rectangle ( 0 <=value < 1.0 )
    * 
    * @return horizontal scrollbar offset
    */
-  public float getHorizontalScrollbarOffset();
+  float getHorizontalScrollbarOffset();
 
   /**
    * The method returns the length of the horizontal scrollbar as part of the length of the side of the border rectangle ( 0 < value <= 1.0 )
    * 
    * @return vertical scrollbar o
    */
-  public float getHorizontalScrollbarLength();
+  float getHorizontalScrollbarLength();
 
   /**
    * The method returns the offset of the vertical scrollbar as part of the length of the side of the border rectangle ( 0 < =value < 1.0 )
    */
-  public float getVerticalScrollbarOffset();
+  float getVerticalScrollbarOffset();
 
   /**
    * The method returns the length of the vertical scrollbar as part of the length of the side of the border rectangle ( 0 <value <= 1.0 )
    */
-  public float getVerticalScrollbarLength();
+  float getVerticalScrollbarLength();
 
 }

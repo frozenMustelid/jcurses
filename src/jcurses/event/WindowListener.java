@@ -9,7 +9,7 @@ public interface WindowListener {
     * if the listener has been registered by it.
     * 
     * @param event the event occured
-    */    
-	public abstract void windowChanged(WindowEvent event);
+    */
+    void windowChanged(WindowEvent event);
 
 }

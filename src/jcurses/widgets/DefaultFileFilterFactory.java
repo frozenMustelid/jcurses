@@ -55,7 +55,7 @@ class DefaultFileFilter implements FileFilter {
 		String file = fileF.getAbsolutePath().trim();
 
 		if (file.lastIndexOf(File.separator) != -1) {
-			file = file.substring(file.lastIndexOf(File.separator) + 1, file.length());
+			file = file.substring(file.lastIndexOf(File.separator) + 1);
 		}
 
 		int index = _filterString.indexOf("*");
@@ -67,11 +67,11 @@ class DefaultFileFilter implements FileFilter {
 				return true;
 			}
 
-			return file.endsWith(_filterString.substring(1, _filterString.length()));
+			return file.endsWith(_filterString.substring(1));
 		} else if (index == (_filterString.length() - 1)) {
 			return file.startsWith(_filterString.substring(0, _filterString.length() - 1));
 		} else {
-			return (file.startsWith(_filterString.substring(0, index))) && (file.endsWith(_filterString.substring(index + 1, _filterString.length())));
+			return (file.startsWith(_filterString.substring(0, index))) && (file.endsWith(_filterString.substring(index + 1)));
 		}
 	}
 }
