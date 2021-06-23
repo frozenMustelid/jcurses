@@ -1814,7 +1814,9 @@ $as_echo "no" >&6; }
 fi
 
 
-javahome="${JAVA_HOME}"
+javahome="/usr/lib/jvm/java-8-openjdk-amd64"
+echo "This was a crude fix. The installer will detect OpenJDK 8, and ONLY OpenJDK 8."
+echo "To alter this, make the approprate path edit to line 1817"
 echo "JAVAHOME=${javahome}"
 for each in `ls ${javahome}/include` ;do
 if  test -d ${javahome}/include/${each}  ;then
